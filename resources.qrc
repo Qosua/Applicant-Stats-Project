@@ -1,0 +1,12 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/">
+        <file>icons/exelicon.png</file>
+        <file>icons/sort-60.png</file>
+        <file>icons/folder-60.png</file>
+        <file>icons/update-60.png</file>
+        <file>config/KCP.xlsx</file>
+        <file>config/columnsNames.xlsx</file>
+        <file>data/maintable.xlsx</file>
+    </qresource>
+</RCC>

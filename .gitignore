@@ -1,9 +1,10 @@
-/build
+/cmake-build-debug
 /data
+/libs
 *.xlsx
 *.xls
 !/settings/KCP.xlsx
 !/settings/columnsNames.xlsx
 /.qtcreator
 *.user.*
-*.user
+*.user`
