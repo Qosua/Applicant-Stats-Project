@@ -30,7 +30,7 @@ add_executable(ApplicantStatsProject
         src/xlsx.h
         src/data-processing/cache-manager.h
         src/data-processing/magic-hat.h
-        src/data-processing/data-to-stats-converter.h
+        #src/data-processing/data-to-stats-converter.h
         src/support-system.h
         src/qml-helper.h
         src/models/tree-view-model.h
@@ -40,17 +40,19 @@ add_executable(ApplicantStatsProject
         src/applicants-faculty-data/applicant.h
         src/applicants-faculty-data/priority-info.h
         src/models/tables-list-model.h
+        src/models/stats-page-model.h
 
         src/main.cpp
         src/data-processing/cache-manager.cpp
         src/data-processing/magic-hat.cpp
-        src/data-processing/data-to-stats-converter.cpp
+        #src/data-processing/data-to-stats-converter.cpp
         src/models/tree-view-model.cpp
         src/applicants-faculty-data/table-parser-bachelor.cpp
         src/applicants-faculty-data/faculty-direction.cpp
         src/applicants-faculty-data/applicant.cpp
         src/applicants-faculty-data/priority-info.cpp
         src/models/tables-list-model.cpp
+        src/models/stats-page-model.cpp
 
         resources.qrc
 )
@@ -68,7 +70,10 @@ qt_add_qml_module(ApplicantStatsProject
         src/gui_qml/PagesMenu.qml
         src/gui_qml/StatusBar.qml
         src/gui_qml/FacultyTreeView.qml
-        src/gui_qml/Stats.qml
+        src/gui_qml/FacultyStatsPage.qml
+        src/gui_qml/DirectionStatsPage.qml
+        src/gui_qml/EmptyStatsPlaceholder.qml
+        src/gui_qml/components/ScoreDist.qml
 )
 
 target_link_libraries(ApplicantStatsProject PRIVATE

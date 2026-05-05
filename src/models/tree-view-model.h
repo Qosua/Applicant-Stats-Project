@@ -19,7 +19,8 @@ public:
 	StudyFormRole,
 	StudyTypeRole,
 	IsDivisionRole,
-	DepthRole
+	DepthRole,
+	SourceIndexRole,
     };
     Q_ENUM(Roles)
 

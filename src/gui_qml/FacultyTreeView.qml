@@ -7,6 +7,12 @@ TreeView {
     model: treeViewModel
     clip: true
 
+    signal directionSelected(int sourceIndex)
+
+    signal facultySelected(string facultyName)
+
+    signal selectionCleared()
+
     selectionModel: ItemSelectionModel {
     }
 
@@ -17,8 +23,13 @@ TreeView {
         id: treeDelegate
 
         onClicked: {
-            console.log(model.display)
-            qmlHelper.sendTreeElemName(model.display, model.isDivision)
+            if (model.isDivision) {
+                console.log("Faculty - " + model.display)
+                treeView.facultySelected(model.display)
+            } else {
+                console.log("Direction - " + model.display)
+                treeView.directionSelected(model.sourceIndex)
+            }
         }
 
         implicitWidth: treeView.width

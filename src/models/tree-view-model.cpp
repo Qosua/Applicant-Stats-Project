@@ -171,7 +171,10 @@ QVariant TreeViewModel::data(const QModelIndex &index, int role) const {
 		default:
 		    return QStringLiteral("ОШИБКА ТИПА ОБУЧЕНИЯ");
 	    }
-
+	case SourceIndexRole:
+	    if (node->isDivision)
+		return -1;
+	    return node->sourceIndex;
 	default:
 	    return {};
     }
@@ -184,6 +187,6 @@ QHash<int, QByteArray> TreeViewModel::roleNames() const {
         {CodeRole, "code"},           {CapacityRole, "capacity"},
         {PoolSizeRole, "poolSize"},   {StudyFormRole, "studyForm"},
         {StudyTypeRole, "studyType"}, {IsDivisionRole, "isDivision"},
-        {DepthRole, "depth"},
+        {DepthRole, "depth"},         {SourceIndexRole, "sourceIndex"},
     };
 }

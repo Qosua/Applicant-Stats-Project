@@ -6,6 +6,16 @@ import ApplicantStatsProjectModule
 
 SplitView {
 
+    function getFileName(mode) {
+        if (mode === "faculty") {
+            return "FacultyStatsPage.qml"
+        } else if (mode === "direction") {
+            return "DirectionStatsPage.qml"
+        } else {
+            return "EmptyStatsPlaceholder.qml"
+        }
+    }
+
     orientation: Qt.Horizontal
     handle: Rectangle {
 
@@ -58,6 +68,19 @@ SplitView {
                 FacultyTreeView {
                     anchors.fill: parent
                     anchors.margins: 8
+
+                    onDirectionSelected: (idx) => {
+                        detailLoader.mode = "direction"
+                        detailLoader.payload = {sourceIndex: idx}
+                    }
+                    onFacultySelected: (name) => {
+                        detailLoader.mode = "faculty"
+                        detailLoader.payload = {facultyName: name}
+                    }
+                    onSelectionCleared: {
+                        detailLoader.mode = "none"
+                        detailLoader.payload = null
+                    }
                 }
             }
             TablesList {
@@ -78,18 +101,29 @@ SplitView {
     Rectangle {
         SplitView.preferredWidth: parent.width / (3 / 4)
         SplitView.minimumWidth: parent.width / 10
-
-        border.color: "#323232"
-        border.width: 1
-
         color: "#191a1c"
+        border.color: "#323232"; border.width: 1
         topRightRadius: 10
         bottomRightRadius: 10
+        clip: true
 
-        Stats {
+        Loader {
+            id: detailLoader
             anchors.fill: parent
-        }
+            anchors.margins: 1
 
+            property string mode: "none"   // "none" | "faculty" | "direction"
+            property var payload: null
+
+            source: getFileName(mode)
+
+            onLoaded: if (item && payload)
+                item.payload = payload
+
+            onPayloadChanged:
+                if (item && payload)
+                    item.payload = payload
+        }
     }
 
 }

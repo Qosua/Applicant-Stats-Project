@@ -62,6 +62,7 @@ int main(int argc, char* argv[]) {
     engine.rootContext()->setContextProperty("sortFilterProxyModel", &proxyModel);
     engine.rootContext()->setContextProperty("qmlHelper", &qmlHelper);
     engine.rootContext()->setContextProperty("treeViewModel", &treeViewModel);
+    engine.rootContext()->setContextProperty("cppStats", &statsPageModel);
     engine.loadFromModule("ApplicantStatsProjectModule", "Main");
 
     int ret = QApplication::exec();
