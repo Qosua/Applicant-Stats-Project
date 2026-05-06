@@ -8,7 +8,6 @@ Item {
 
     property var payload: null
     readonly property int sourceIndex: payload ? (payload.sourceIndex ?? -1) : -1
-    readonly property real letterSpacing: 1.05
 
     readonly property var stats: sourceIndex >= 0
         ? cppStats.directionStatsAt(sourceIndex)
@@ -23,7 +22,7 @@ Item {
         Layout.preferredHeight: 78
         radius: 8
         color: "#222326"
-        border.color: "#222326"
+        border.color: "#2d2d35"
         border.width: 1
 
         // Цветной акцент слева
@@ -48,8 +47,7 @@ Item {
                 text: label
                 color: "#dddddd"
                 font.pixelSize: 11
-                font.letterSpacing: page.letterSpacing
-                font.weight: Font.Medium
+                font.weight: Font.DemiBold
             }
             Item {
                 Layout.fillHeight: true
@@ -72,14 +70,12 @@ Item {
             text: stats ? stats.name : "STATS ARE NULL"
             color: "#eeeeee"
             font.pixelSize: 24
-            font.letterSpacing: page.letterSpacing
             font.weight: Font.Medium
         }
         Label {
             text: stats ? "Факультет: " + stats.facultyName : "STATS ARE NULL"
             color: "#aaaaaa";
             font.pixelSize: 16
-            font.letterSpacing: page.letterSpacing
             font.weight: Font.Medium
         }
 
@@ -88,13 +84,11 @@ Item {
             Label {
                 text: "Вид обучения:";
                 color: "#dddddd"; font.pixelSize: 15
-                font.letterSpacing: page.letterSpacing
                 font.weight: Font.Medium
             }
             Label {
                 text: (stats ? stats.studyType : "ОШИБКА ВИДА ОБУЧЕНИЯ (QML)");
                 color: "#aad3a8"; font.pixelSize: 15
-                font.letterSpacing: page.letterSpacing
                 font.weight: Font.Medium
             }
             Item {
@@ -102,13 +96,23 @@ Item {
             Label {
                 text: "Форма обучения:";
                 color: "#dddddd"; font.pixelSize: 15
-                font.letterSpacing: page.letterSpacing
                 font.weight: Font.Medium
             }
             Label {
                 text: (stats ? stats.studyForm : "ОШИБКА ФОРМЫ ОБУЧЕНИЯ (QML)");
                 color: "#9ca9c8"; font.pixelSize: 15
-                font.letterSpacing: page.letterSpacing
+                font.weight: Font.Medium
+            }
+            Item {
+            }
+            Label {
+                text: "Код направления:";
+                color: "#dddddd"; font.pixelSize: 15
+                font.weight: Font.Medium
+            }
+            Label {
+                text: (stats ? stats.code : "ОШИБКА КОДА НАПРАВЛЕНИЯ (QML)");
+                color: "#b891a2"; font.pixelSize: 15
                 font.weight: Font.Medium
             }
         }
@@ -121,15 +125,28 @@ Item {
 
         SplitView {
 
+            handle: Rectangle {
+
+                implicitWidth: 6
+
+                color: SplitHandle.hovered ? "#556da3" : "transparent"
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: 100
+                    }
+                }
+            }
+
             anchors.margins: 2
             spacing: 4
 
-            Layout.preferredWidth: parent.width
+            Layout.fillWidth: true
             Layout.preferredHeight: (parent.height / 2) + 120
 
             ScoreDist {
                 SplitView.preferredHeight: parent.height
-                SplitView.preferredWidth: parent.width / 1.8
+                SplitView.preferredWidth: parent.width / 2
                 SplitView.minimumWidth: parent.width / 2.4
 
                 distribution: stats ? stats.scoreDistribution : []
@@ -140,14 +157,82 @@ Item {
                 clip: true
                 SplitView.minimumWidth: parent.width / 4
 
-                model: 5
+                model: applicantsListModel
                 spacing: 1
 
                 delegate: Rectangle {
-                    width: parent.width
-                    height: 25
+                    id: applicantDelegate
 
-                    color: "red"
+                    required property int index
+                    required property string applicantName
+                    required property int applicantId
+                    required property string applicantEmail
+                    required property string applicantPhone
+                    required property string applicantScore
+
+                    width: ListView.view.width
+                    height: 24
+                    radius: 4
+
+                    color: hoverHandler.hovered ? "#34363a" : "#26282b"
+
+                    Behavior on color {
+                        ColorAnimation { duration: 100 }
+                    }
+
+                    HoverHandler {
+                        id: hoverHandler
+                        cursorShape: Qt.PointingHandCursor
+                    }
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 20
+                        anchors.rightMargin: 20
+                        spacing: 6
+
+                        Label {
+                            text: applicantDelegate.index + 1
+                            color: "#777777"
+                            font.pixelSize: 11
+                            font.family: "Consolas"
+                            horizontalAlignment: Text.AlignLeft
+                            Layout.preferredWidth: 25
+                        }
+
+                        Label {
+                            text: applicantDelegate.applicantId
+                            color: "#7f9cc4"
+                            font.pixelSize: 12
+                            font.family: "Consolas"
+                            Layout.preferredWidth: 70
+                        }
+
+                        Label {
+                            text: "балл: " + applicantDelegate.applicantScore
+                            color: "#91cd84"
+                            font.pixelSize: 11
+                            elide: Text.ElideRight
+                            Layout.preferredWidth: 70
+                        }
+
+                        Label {
+                            text: applicantDelegate.applicantPhone
+                            color: "#9a9a9a"
+                            font.pixelSize: 12
+                            font.family: "Consolas"
+                            Layout.preferredWidth: 140
+                        }
+
+                        Label {
+                            text: applicantDelegate.applicantName
+                            color: "#e8e8ec"
+                            font.pixelSize: 12
+                            elide: Text.ElideRight
+                            Layout.fillWidth: true
+                            Layout.preferredWidth: 1
+                        }
+                    }
                 }
             }
         }
@@ -181,8 +266,7 @@ Item {
                             text: "ЗАЧИСЛЕНО"
                             color: "#dddddd"
                             font.pixelSize: 11
-                            font.letterSpacing: page.letterSpacing
-                            font.weight: Font.Medium
+                            font.weight: Font.DemiBold
                             Layout.fillWidth: true
                         }
                         Label {

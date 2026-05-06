@@ -1,12 +1,18 @@
 #include "stats-page-model.h"
 
-StatsPageModel::StatsPageModel() {}
+StatsPageModel::StatsPageModel() {
+    m_applicantsListModel = std::make_shared<ApplicantsListModel>(this);
+}
 
 void StatsPageModel::setFaculties(std::shared_ptr<QList<FacultyDirection>> data) {
 
     m_source = std::move(data);
     rebuildDirectionStats();
     rebuildFacultyStats();
+}
+
+std::shared_ptr<ApplicantsListModel> StatsPageModel::getApplicantsListModel() {
+    return m_applicantsListModel;
 }
 
 void StatsPageModel::rebuildDirectionStats() {
@@ -23,6 +29,7 @@ void StatsPageModel::rebuildDirectionStats() {
 
 	DirectionStats d;
 	d.name = dir.name();
+	d.code = dir.code();
 	d.facultyName = dir.division();
 	d.form = dir.studyForm();
 	d.type = dir.studyType();
@@ -63,7 +70,7 @@ void StatsPageModel::rebuildFacultyStats() {
     if (m_directions.isEmpty())
 	return;
 
-    QHash<QString, int> facultyIndex;  // имя -> индекс в m_faculties
+    QHash<QString, int> facultyIndex;
 
     for (int i = 0; i < m_directions.size(); ++i) {
 	const DirectionStats& d = m_directions[i];
@@ -111,8 +118,12 @@ QMap<QString, QVariant> StatsPageModel::directionStatsAt(int index) const {
         return {};
 
     const auto& d = m_directions[index];
+
+    m_applicantsListModel->setApplicantsList((*m_source)[d.sourceIndex].pool());
+
     QMap<QString, QVariant> m;
     m["name"]        = d.name;
+    m["code"]        = d.code;
     m["facultyName"] = d.facultyName;
     m["size"]        = d.size;
     m["capacity"]    = d.capacity;
@@ -187,4 +198,7 @@ QMap<QString, QVariant> StatsPageModel::facultyStats(const QString& name) const 
     }
     return {};
 
+}
+std::shared_ptr<ApplicantsListModel> StatsPageModel::getApplicantsListModel() const {
+    return m_applicantsListModel;
 }

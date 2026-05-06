@@ -63,6 +63,11 @@ int main(int argc, char* argv[]) {
     engine.rootContext()->setContextProperty("qmlHelper", &qmlHelper);
     engine.rootContext()->setContextProperty("treeViewModel", &treeViewModel);
     engine.rootContext()->setContextProperty("cppStats", &statsPageModel);
+
+    // CHECK THIS IN FUTURE
+    engine.rootContext()->setContextProperty("applicantsListModel", statsPageModel.getApplicantsListModel().get());
+    //
+
     engine.loadFromModule("ApplicantStatsProjectModule", "Main");
 
     int ret = QApplication::exec();

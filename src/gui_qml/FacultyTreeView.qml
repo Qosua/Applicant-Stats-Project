@@ -110,9 +110,14 @@ TreeView {
         background: Rectangle {
             radius: 8
             implicitWidth: treeView.width
+
+            Behavior on color {
+                ColorAnimation { duration: 100 }
+            }
+
             color: treeDelegate.current ? "#3a4660"
-                : treeDelegate.hovered ? "#393b40"
-                    : "transparent"
+                : treeDelegate.hovered ? "#34363a"
+                    : "#191a1c"
         }
     }
 }

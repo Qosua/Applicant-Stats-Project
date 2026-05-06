@@ -41,6 +41,7 @@ add_executable(ApplicantStatsProject
         src/applicants-faculty-data/priority-info.h
         src/models/tables-list-model.h
         src/models/stats-page-model.h
+        src/models/applicants-list-model.h
 
         src/main.cpp
         src/data-processing/cache-manager.cpp
@@ -53,6 +54,7 @@ add_executable(ApplicantStatsProject
         src/applicants-faculty-data/priority-info.cpp
         src/models/tables-list-model.cpp
         src/models/stats-page-model.cpp
+        src/models/applicants-list-model.cpp
 
         resources.qrc
 )

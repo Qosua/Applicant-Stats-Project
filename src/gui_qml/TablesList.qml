@@ -185,7 +185,9 @@ Rectangle {
                         return "#3f4247"
                     return "#2c2e32"
                 }
-
+                Behavior on color {
+                    ColorAnimation { duration: 100 }
+                }
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
