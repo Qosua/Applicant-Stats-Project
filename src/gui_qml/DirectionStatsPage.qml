@@ -13,6 +13,7 @@ Item {
         ? cppStats.directionStatsAt(sourceIndex)
         : null
 
+    //panel component
     component StatCard: Rectangle {
         property string label: ""
         property var value: "—"
@@ -66,6 +67,8 @@ Item {
         anchors.margins: 16
         spacing: 12
 
+
+        //page header
         Label {
             text: stats ? stats.name : "STATS ARE NULL"
             color: "#eeeeee"
@@ -79,6 +82,7 @@ Item {
             font.weight: Font.Medium
         }
 
+        //page header
         RowLayout {
             spacing: 12
             Label {
@@ -117,12 +121,14 @@ Item {
             }
         }
 
+        //page header divider
         Rectangle {
             Layout.fillWidth: true;
             height: 1
             color: "#404040"
         }
 
+        //score graph and applicants list
         SplitView {
 
             handle: Rectangle {
@@ -144,6 +150,7 @@ Item {
             Layout.fillWidth: true
             Layout.preferredHeight: (parent.height / 2) + 120
 
+            //score graph
             ScoreDist {
                 SplitView.preferredHeight: parent.height
                 SplitView.preferredWidth: parent.width / 2
@@ -153,100 +160,191 @@ Item {
                 firstBucketScore: stats ? stats.scoreBucketStart : 100
                 bucketStep: stats ? stats.scoreBucketStep : 10
             }
-            ListView {
-                clip: true
+
+            //applicants list
+            Item {
                 SplitView.minimumWidth: parent.width / 4
 
-                model: applicantsListModel
-                spacing: 1
-
-                delegate: Rectangle {
-                    id: applicantDelegate
-
-                    required property int index
-                    required property string applicantName
-                    required property int applicantId
-                    required property string applicantEmail
-                    required property string applicantPhone
-                    required property string applicantScore
-
-                    width: ListView.view.width
+                //header
+                Row {
+                    id: listHeader
+                    width: parent.width
                     height: 24
-                    radius: 4
+                    anchors.top: parent.top
+                    anchors.leftMargin: 20
+                    spacing: 6
+                    leftPadding: 20
 
-                    color: hoverHandler.hovered ? "#34363a" : "#26282b"
+                    Label {
+                        width: 25
+                        text: "#"
+                        color: "#555555"
+                        font.pixelSize: 15
+                        font.family: "Consolas"
+                    }
+                    Label {
+                        width: 70
+                        text: "ID"
+                        color: "#557799"
+                        font.pixelSize: 15
+                        font.family: "Consolas"
+                    }
+                    Label {
+                        width: 70
+                        text: "Баллы"
+                        color: "#6a9960"
+                        font.pixelSize: 15
+                    }
+                    Label {
+                        width: 140
+                        text: "Телефон"
+                        color: "#6a6a6a"
+                        font.pixelSize: 15
+                        font.family: "Consolas"
+                    }
+                    Label {
+                        text: "ФИО"
+                        font.pixelSize: 15
+                        color: "#9a9aa0"
+                        font.family: "Consolas"
+                    }
+                }
 
-                    Behavior on color {
-                        ColorAnimation { duration: 100 }
+                //graph divider
+                Rectangle {
+                    id: headerDivider
+                    anchors.top: listHeader.bottom
+                    width: parent.width
+                    height: 1
+                    color: "#3a3c40"
+                }
+
+                //list
+                ListView {
+                    id: applicantListView
+                    clip: true
+
+                    anchors.top: headerDivider.bottom
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.topMargin: 4
+
+                    model: applicantsListModel
+                    spacing: 1
+
+                    NumberAnimation {
+                        id: scrollAnim
+                        target: applicantListView
+                        property: "contentY"
+                        duration: 180
+                        easing.type: Easing.OutQuad
+                    }
+                    WheelHandler {
+                        onWheel: (event) => {
+                            const delta = event.angleDelta.y * 0.54
+                            const animY = scrollAnim.running
+                                ? scrollAnim.to
+                                : applicantListView.contentY
+
+                            scrollAnim.to = Math.max(0, Math.min(animY - delta, applicantListView.contentHeight - applicantListView.height))
+                            scrollAnim.restart()
+                        }
                     }
 
-                    HoverHandler {
-                        id: hoverHandler
-                        cursorShape: Qt.PointingHandCursor
-                    }
+                    delegate: Rectangle {
+                        id: applicantDelegate
 
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.leftMargin: 20
-                        anchors.rightMargin: 20
-                        spacing: 6
+                        required property int index
+                        required property string applicantName
+                        required property int applicantId
+                        required property string applicantEmail
+                        required property string applicantPhone
+                        required property string applicantScore
 
-                        Label {
-                            text: applicantDelegate.index + 1
-                            color: "#777777"
-                            font.pixelSize: 11
-                            font.family: "Consolas"
-                            horizontalAlignment: Text.AlignLeft
-                            Layout.preferredWidth: 25
+                        width: ListView.view.width
+                        height: 24
+                        radius: 4
+
+                        color: hoverHandler.hovered ? "#34363a" : "#26282b"
+
+                        Behavior on color {
+                            ColorAnimation {
+                                duration: 100
+                            }
                         }
 
-                        Label {
-                            text: applicantDelegate.applicantId
-                            color: "#7f9cc4"
-                            font.pixelSize: 12
-                            font.family: "Consolas"
-                            Layout.preferredWidth: 70
+                        HoverHandler {
+                            id: hoverHandler
                         }
 
-                        Label {
-                            text: "балл: " + applicantDelegate.applicantScore
-                            color: "#91cd84"
-                            font.pixelSize: 11
-                            elide: Text.ElideRight
-                            Layout.preferredWidth: 70
-                        }
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.leftMargin: 20
+                            anchors.rightMargin: 20
+                            spacing: 6
 
-                        Label {
-                            text: applicantDelegate.applicantPhone
-                            color: "#9a9a9a"
-                            font.pixelSize: 12
-                            font.family: "Consolas"
-                            Layout.preferredWidth: 140
-                        }
+                            Label {
+                                text: applicantDelegate.index + 1
+                                color: "#777777"
+                                font.pixelSize: 11
+                                font.family: "Consolas"
+                                horizontalAlignment: Text.AlignLeft
+                                Layout.preferredWidth: 25
+                            }
 
-                        Label {
-                            text: applicantDelegate.applicantName
-                            color: "#e8e8ec"
-                            font.pixelSize: 12
-                            elide: Text.ElideRight
-                            Layout.fillWidth: true
-                            Layout.preferredWidth: 1
+                            Label {
+                                text: applicantDelegate.applicantId
+                                color: "#7f9cc4"
+                                font.pixelSize: 12
+                                font.family: "Consolas"
+                                Layout.preferredWidth: 70
+                            }
+
+                            Label {
+                                text: applicantDelegate.applicantScore
+                                color: "#91cd84"
+                                font.pixelSize: 11
+                                elide: Text.ElideRight
+                                Layout.preferredWidth: 70
+                            }
+
+                            Label {
+                                text: applicantDelegate.applicantPhone
+                                color: "#9a9a9a"
+                                font.pixelSize: 12
+                                font.family: "Consolas"
+                                Layout.preferredWidth: 140
+                            }
+
+                            Label {
+                                text: applicantDelegate.applicantName
+                                color: "#e8e8ec"
+                                font.pixelSize: 12
+                                elide: Text.ElideRight
+                                Layout.fillWidth: true
+                                Layout.preferredWidth: 1
+                            }
                         }
                     }
                 }
             }
         }
 
+        //divider2
         Rectangle {
+            id: divider2
             Layout.fillWidth: true;
             height: 1
             color: "#404040"
         }
 
+        //progressBar and panels
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 10
 
+            //progressBar
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 78
@@ -316,6 +414,7 @@ Item {
                 }
             }
 
+            //panels
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 10

@@ -63,9 +63,9 @@ int main(int argc, char* argv[]) {
     engine.rootContext()->setContextProperty("qmlHelper", &qmlHelper);
     engine.rootContext()->setContextProperty("treeViewModel", &treeViewModel);
     engine.rootContext()->setContextProperty("cppStats", &statsPageModel);
-
-    // CHECK THIS IN FUTURE
-    engine.rootContext()->setContextProperty("applicantsListModel", statsPageModel.getApplicantsListModel().get());
+    // CHECK THIS IN THE FUTURE
+    auto applicantsListModel = statsPageModel.getApplicantsListModel().get();
+    engine.rootContext()->setContextProperty("applicantsListModel", applicantsListModel);
     //
 
     engine.loadFromModule("ApplicantStatsProjectModule", "Main");

@@ -96,7 +96,6 @@ void StatsPageModel::rebuildFacultyStats() {
 	        = f.minSumScore ? std::min(*f.minSumScore, *d.minSumScore) : d.minSumScore;
     }
 
-    // Средний по факультету — взвешенно по числу зачисленных
     for (auto& f : m_faculties) {
 	long sum = 0;
 	int total = 0;

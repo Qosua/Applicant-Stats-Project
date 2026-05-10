@@ -16,6 +16,26 @@ TreeView {
     selectionModel: ItemSelectionModel {
     }
 
+    NumberAnimation {
+        id: scrollAnim
+        target: treeView
+        property: "contentY"
+        duration: 180
+        easing.type: Easing.OutQuad
+    }
+    WheelHandler {
+        onWheel: (event) => {
+            const delta = event.angleDelta.y * 0.54
+            const animY = scrollAnim.running
+                ? scrollAnim.to
+                : treeView.contentY
+
+            scrollAnim.to = Math.max(0, Math.min(animY - delta, treeView.contentHeight - treeView.height))
+            scrollAnim.restart()
+        }
+    }
+
+
     rowSpacing: 3
     boundsBehavior: Flickable.StopAtBounds
 
@@ -41,15 +61,17 @@ TreeView {
         indentation: 20
 
         indicator: Item {
-            width: 16;
+            width: 16
             height: 16
 
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.margins: 1
+
             Label {
-                anchors.centerIn: parent
-                text: treeDelegate.expanded ? "-" : "+"
-                font.bold: true
+                anchors.verticalCenter: parent.verticalCenter
+                text: treeDelegate.expanded ? "⯆" : "⯈"
                 color: "#607ab5"
-                font.pixelSize: 18
+                font.pixelSize: 14
             }
         }
 
