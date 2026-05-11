@@ -46,8 +46,8 @@ Rectangle {
                 backgroundColor: "transparent"
                 plotAreaBackgroundColor: "#202022"
 
-                seriesColors: ["#7dd9a4"]
-                borderColors: ["#7dd9a4"]
+                seriesColors: ["#5cb180"]
+                borderColors: ["#5cb180"]
 
                 grid.mainColor: "#3a3a3c"
                 grid.subColor: "#222223"
@@ -70,6 +70,7 @@ Rectangle {
                         cats.push(String(root.firstBucketScore + i * root.bucketStep))
                     return cats
                 }
+
 
                 titleText:    "Диапозоны баллов"
                 titleVisible: true

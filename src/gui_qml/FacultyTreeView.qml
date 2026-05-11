@@ -56,7 +56,7 @@ TreeView {
 
         topPadding: 5
         bottomPadding: 5
-        leftPadding: 15 + depth * 20
+        leftPadding: 15 + depth * 10
         implicitHeight: 25
         indentation: 20
 
