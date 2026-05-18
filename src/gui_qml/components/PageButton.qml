@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtGraphs
 import QtQuick.Controls
+import QtQuick.Effects
 import ApplicantStatsProjectModule
 
 Button {
@@ -68,9 +69,10 @@ Button {
         }
 
         background: Rectangle {
+            id: rect
             color: "#2b2b2b"
             radius: 5
-            border.color: "#556da3"
+            border.color: "#40444a"
 
             Behavior on color {
                 ColorAnimation {

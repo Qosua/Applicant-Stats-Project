@@ -18,17 +18,62 @@ Rectangle {
     anchors.topMargin: 5
 
     RowLayout {
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
         anchors.fill: parent
-        spacing: 20
+        spacing: 50
 
         Text {
+            property var arr: qmlHelper.currentTablePath.split("/")
             id: pathText
-            text: (qmlHelper.currentTablePath !== ""
-                ? "Путь:  " + qmlHelper.currentTablePath.replace(/[\\/]/g, " > ")
-                : "Путь:  файл не выбран")
+
+            text: (arr.length && arr[arr.length - 1] !== ""
+                ? "Таблица: " + arr[arr.length - 1]
+                : "Файл не выбран")
             font.pointSize: 11
             color: "#cccccc"
             elide: Text.ElideMiddle
+        }
+
+        Item {
+            Layout.fillWidth: true
+        }
+
+        Rectangle {
+            Layout.preferredHeight: parent.height
+            Layout.preferredWidth: 400
+            color: "transparent"
+
+            RowLayout {
+                anchors.fill: parent
+                spacing: 15
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: parent.height / 3.8
+                    Layout.alignment: Qt.AlignVCenter
+                    radius: parent.height / 2
+
+                    color: "#3c3c3c"
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+
+                        height: parent.height
+                        width: parent.width * qmlHelper.currentLoadBarPart
+
+                        radius: parent.height
+                        color: "#5073C1"
+
+                    }
+                }
+                Text {
+                    Layout.alignment: Qt.AlignVCenter
+                    text: "Процесс"
+                    font.pointSize: 11
+                    color: "#bbbbbb"
+                }
+            }
         }
 
         Item {

@@ -28,6 +28,7 @@ Rectangle {
 
         anchors.fill: parent
         anchors.topMargin: innerPadding
+        anchors.bottomMargin: innerPadding
 
         PageButton {
             Layout.preferredWidth: parent.width - (parent.innerPadding * 2)
@@ -49,13 +50,16 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter
 
             btnIconSource: "qrc:/resources/icons/menu-burger.png"
-            btnToolTipName: " Логи "
+            btnToolTipName: " Найстройка правил приёма "
 
             isBtnChecked: (window.currentPageIndex === 1)
             onClicked: {
                 window.currentPageIndex = 1
             }
 
+        }
+        Item {
+            Layout.fillHeight: true
         }
         PageButton {
             Layout.preferredWidth: parent.width - (parent.innerPadding * 2)
@@ -70,9 +74,6 @@ Rectangle {
                 window.currentPageIndex = 2
             }
 
-        }
-        Item {
-            Layout.fillHeight: true
         }
 
     }

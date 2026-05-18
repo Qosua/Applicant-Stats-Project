@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickWindow>
 #include <QSortFilterProxyModel>
 #include <QThread>
 
@@ -38,6 +39,8 @@ void moveToThread(QThread& thread, CacheManager& cacheManager) {
 int main(int argc, char* argv[]) {
 
     SetConsoleOutputCP(CP_UTF8);
+
+    // QQuickWindow::setSceneGraphBackend("software");
 
     QApplication app(argc, argv);
     SupportSystem::init();

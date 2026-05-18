@@ -186,7 +186,9 @@ Rectangle {
                     return "#2c2e32"
                 }
                 Behavior on color {
-                    ColorAnimation { duration: 100 }
+                    ColorAnimation {
+                        duration: 100
+                    }
                 }
                 MouseArea {
                     anchors.fill: parent
@@ -194,10 +196,10 @@ Rectangle {
                         qmlHelper.currentTablePath = tableFullPath
                         qmlHelper.sendSignalToProceedTable(tableName)
                     }
-                }
-                HoverHandler {
-                    id: delegatHover
-                    cursorShape: Qt.PointingHandCursor
+                    HoverHandler {
+                        id: delegatHover
+                        cursorShape: Qt.PointingHandCursor
+                    }
                 }
                 Text {
                     id: tableLastChangeDateText

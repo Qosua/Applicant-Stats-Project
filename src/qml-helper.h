@@ -11,11 +11,11 @@
 
 class QmlHelper : public QObject {
     Q_OBJECT
-    Q_PROPERTY(QString currentTablePath READ currentTablePath WRITE setCurrentTablePath NOTIFY
-                   currentTablePathChanged)
-    Q_PROPERTY(QString fileSizeString READ fileSizeString WRITE setCurrentTablePath NOTIFY
-                   currentTablePathChanged)
+    Q_PROPERTY(QString currentTablePath READ currentTablePath WRITE setCurrentTablePath)
+    Q_PROPERTY(QString fileSizeString READ fileSizeString WRITE setCurrentTablePath)
     Q_PROPERTY(QString appVersion READ appVersion WRITE setAppVersion)
+    Q_PROPERTY(bool statusBarVisible READ statusBarVisible WRITE setStatusBarVisible)
+    Q_PROPERTY(double currentLoadBarPart READ currentLoadBarPart WRITE setCurrentLoadBarPart)
 public:
     explicit QmlHelper(QObject *parent = nullptr) : QObject(parent) {}
 
@@ -46,35 +46,24 @@ public:
     QString currentTablePath() const { return m_currentTablePath; }
     QString fileSizeString() const { return QString::number(QFileInfo(m_fileSizeString).size()); }
     QString appVersion() const { return m_version; }
+    bool statusBarVisible() const { return m_statusBarVisible; }
+    double currentLoadBarPart() const { return m_currentLoadBarPart; }
 
-    void setCurrentTablePath(const QString &path) {
-	if (m_currentTablePath == path)
-	    return;
-	m_currentTablePath = path;
-	emit currentTablePathChanged();
-    }
-    void setFileSizeString(const QString &sizeString) {
-	if (m_fileSizeString == sizeString)
-	    return;
-	m_fileSizeString = sizeString;
-	emit fileSizeStringChanged();
-    }
-    void setAppVersion(const QString &version) {
-	if (m_version == version)
-	    return;
-	m_version = version;
-    }
+    void setCurrentTablePath(const QString &path) { m_currentTablePath = path; }
+    void setFileSizeString(const QString &sizeString) { m_fileSizeString = sizeString; }
+    void setAppVersion(const QString &version) { m_version = version; }
+    void setStatusBarVisible(const bool &flag) { m_statusBarVisible = flag; }
+    void setCurrentLoadBarPart(const double &part) { m_currentLoadBarPart = part; }
 
 private:
     QString m_currentTablePath;
     QString m_fileSizeString;
     QString m_version;
+    bool m_statusBarVisible;
+    double m_currentLoadBarPart = 0.8;
 
 signals:
     void sendSignalToProceedTable(const QString &tableName);
-    void sendTreeElemName(const QString &elemName, bool isDivision);
-    void currentTablePathChanged();
-    void fileSizeStringChanged();
 };
 
 #endif  // APPLICANTSTATSPROJECT_QMLHELPER_H

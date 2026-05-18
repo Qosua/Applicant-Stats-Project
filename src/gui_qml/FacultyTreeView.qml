@@ -52,6 +52,11 @@ TreeView {
             }
         }
 
+        HoverHandler {
+            id: delegatHover
+            cursorShape: Qt.PointingHandCursor
+        }
+
         implicitWidth: treeView.width
 
         topPadding: 5
@@ -134,7 +139,9 @@ TreeView {
             implicitWidth: treeView.width
 
             Behavior on color {
-                ColorAnimation { duration: 100 }
+                ColorAnimation {
+                    duration: 100
+                }
             }
 
             color: treeDelegate.current ? "#3a4660"
