@@ -65,16 +65,16 @@ qt_add_qml_module(ApplicantStatsProject
         NO_PLUGIN
         QML_FILES
         src/gui_qml/Main.qml
-        src/gui_qml/StatsPage.qml
+        src/gui_qml/StatsPage/StatsPage.qml
         src/gui_qml/components/PageButton.qml
-        src/gui_qml/TablesList.qml
+        src/gui_qml/StatsPage/TablesList.qml
         src/gui_qml/visual-effects/LeftTopGradient.qml
         src/gui_qml/PagesMenu.qml
         src/gui_qml/StatusBar.qml
-        src/gui_qml/FacultyTreeView.qml
-        src/gui_qml/FacultyStatsPage.qml
-        src/gui_qml/DirectionStatsPage.qml
-        src/gui_qml/EmptyStatsPlaceholder.qml
+        src/gui_qml/StatsPage/FacultyTreeView.qml
+        src/gui_qml/StatsPage/FacultyStatsPage.qml
+        src/gui_qml/StatsPage/DirectionStatsPage.qml
+        src/gui_qml/StatsPage/EmptyStatsPlaceholder.qml
         src/gui_qml/components/ScoreDist.qml
 )
 

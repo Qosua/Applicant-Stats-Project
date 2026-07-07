@@ -53,6 +53,7 @@ Rectangle {
             btnToolTipName: " Найстройка правил приёма "
 
             isBtnChecked: (window.currentPageIndex === 1)
+
             onClicked: {
                 window.currentPageIndex = 1
             }
