@@ -8,6 +8,7 @@
 #include <QThread>
 
 #include "data-processing/cache-manager.h"
+#include "database-manager.h"
 #include "models/stats-page-model.h"
 #include "models/tables-list-model.h"
 #include "models/tree-view-model.h"
@@ -43,7 +44,10 @@ int main(int argc, char* argv[]) {
     // QQuickWindow::setSceneGraphBackend("software");
 
     QApplication app(argc, argv);
+
     SupportSystem::init();
+    DataBaseManager::instance().init();
+
     QThread cacheThread;
     CacheManager cacheManager;
 
@@ -67,7 +71,8 @@ int main(int argc, char* argv[]) {
     engine.rootContext()->setContextProperty("treeViewModel", &treeViewModel);
     engine.rootContext()->setContextProperty("cppStats", &statsPageModel);
     // CHECK THIS IN THE FUTURE
-    engine.rootContext()->setContextProperty("applicantsListModel", statsPageModel.getApplicantsListModel().get());
+    engine.rootContext()->setContextProperty("applicantsListModel",
+                                             statsPageModel.getApplicantsListModel().get());
     //
 
     engine.loadFromModule("ApplicantStatsProjectModule", "Main");

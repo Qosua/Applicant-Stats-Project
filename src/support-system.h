@@ -34,6 +34,10 @@ signals:
     void initCacheManager();
 
 public:
+    inline const static QString appDbPath
+        = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
+          + "/Applicants-Stats-Project/database.db";
+
     inline const static QString appRootDataPath
         = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
           + "/Applicants-Stats-Project";

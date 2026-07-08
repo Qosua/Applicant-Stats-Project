@@ -23,6 +23,7 @@ find_package(Qt6 COMPONENTS
         Qml
         Quick
         Graphs
+        Sql
         REQUIRED)
 
 add_executable(ApplicantStatsProject
@@ -57,6 +58,7 @@ add_executable(ApplicantStatsProject
         src/models/applicants-list-model.cpp
 
         resources.qrc
+        src/database-manager.h
 )
 
 qt_add_qml_module(ApplicantStatsProject
@@ -65,16 +67,16 @@ qt_add_qml_module(ApplicantStatsProject
         NO_PLUGIN
         QML_FILES
         src/gui_qml/Main.qml
-        src/gui_qml/StatsPage/StatsPage.qml
+        src/gui_qml/stats-page/StatsPage.qml
         src/gui_qml/components/PageButton.qml
-        src/gui_qml/StatsPage/TablesList.qml
+        src/gui_qml/stats-page/TablesList.qml
         src/gui_qml/visual-effects/LeftTopGradient.qml
         src/gui_qml/PagesMenu.qml
         src/gui_qml/StatusBar.qml
-        src/gui_qml/StatsPage/FacultyTreeView.qml
-        src/gui_qml/StatsPage/FacultyStatsPage.qml
-        src/gui_qml/StatsPage/DirectionStatsPage.qml
-        src/gui_qml/StatsPage/EmptyStatsPlaceholder.qml
+        src/gui_qml/stats-page/FacultyTreeView.qml
+        src/gui_qml/stats-page/FacultyStatsPage.qml
+        src/gui_qml/stats-page/DirectionStatsPage.qml
+        src/gui_qml/stats-page/EmptyStatsPlaceholder.qml
         src/gui_qml/components/ScoreDist.qml
 )
 
@@ -85,6 +87,7 @@ target_link_libraries(ApplicantStatsProject PRIVATE
         Qt6::Qml
         Qt6::Quick
         Qt6::Graphs
+        Qt6::Sql
         QXlsx::QXlsx
         $<$<PLATFORM_ID:Windows>:dwmapi>
 )

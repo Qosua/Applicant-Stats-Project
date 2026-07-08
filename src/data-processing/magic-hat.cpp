@@ -433,7 +433,7 @@ void MagicHat::setPathToKCP(const QString& path, const QString& sheet) {
 	QString division = doc.read(i, 2).toString();
 	QString name = doc.read(i, 3).toString();
 	QString studyForm = doc.read(i, 4).toString();
-	QString type = doc.read(i, 5).toString();
+	QString studyType = doc.read(i, 5).toString();
 	QString kcp = doc.read(i, 6).toString();
 
 	m_facultyCells->append(FacultyDirection());
@@ -451,19 +451,19 @@ void MagicHat::setPathToKCP(const QString& path, const QString& sheet) {
 	if (studyForm.toLower() == "очно-заочная" or studyForm.toLower() == "очно-заочное")
 	    m_facultyCells->last().setStudyForm(StudyForm::PersonalNotPersonal);
 
-	if (type.toLower() == "бюджет")
+	if (studyType.toLower() == "бюджет")
 	    m_facultyCells->last().setStudyType(StudyType::Budget);
 
-	if (type.toLower() == "внебюджет")
+	if (studyType.toLower() == "внебюджет")
 	    m_facultyCells->last().setStudyType(StudyType::NonBudget);
 
-	if (type.toLower() == "отдельная квота")
+	if (studyType.toLower() == "отдельная квота")
 	    m_facultyCells->last().setStudyType(StudyType::Kvot);
 
-	if (type.toLower() == "особое право")
+	if (studyType.toLower() == "особое право")
 	    m_facultyCells->last().setStudyType(StudyType::SpecialRight);
 
-	if (type.toLower() == "целевое" or type.toLower() == "целевая")
+	if (studyType.toLower() == "целевое" or studyType.toLower() == "целевая")
 	    m_facultyCells->last().setStudyType(StudyType::CompanySponsor);
     }
 }
