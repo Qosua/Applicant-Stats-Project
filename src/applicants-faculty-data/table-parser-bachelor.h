@@ -23,14 +23,14 @@ public:
     std::shared_ptr<QList<Applicant>> getApplicants(ApplicantsFilterFlags flag,
                                                     StudyType priorityToDelete) const;
 
-private:
+//private:
     bool setColumnsNames();
     void printStatsToConsole() const;
 
     QString extractCode(const QString& str);
     QString extractName(const QString& str);
     StudyForm extractStudyForm(const QString& str);
-    StudyType extractType(const QString& str);
+    StudyType extractStudyType(const QString& str);
 
     QString m_tablePath;
     QString m_columnsNamesFilePath;

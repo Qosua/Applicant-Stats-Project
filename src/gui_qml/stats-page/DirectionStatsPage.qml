@@ -378,7 +378,7 @@ Item {
                                 ? Math.round((stats.size / stats.capacity) * 100) + "%"
                                 : "0%"
                             color: "#6fa86f"
-                            font.pixelSize: 13
+                            font.pixelSize: 18
                             font.weight: Font.Medium
                         }
                     }
@@ -421,27 +421,27 @@ Item {
 
                 StatCard {
                     label: "ПРОХОДНОЙ"
-                    value: stats && stats.size === stats.capacity ? stats.minScore : "—"
+                    value: stats && stats.size === stats.capacity ? stats.minScore : "-"
                     accentColor: "#d4a373"
                 }
                 StatCard {
                     label: "МАКСИМУМ"
-                    value: stats && stats.maxScore !== undefined ? stats.maxScore : "—"
+                    value: stats && stats.maxScore !== undefined ? stats.maxScore : "-"
                     accentColor: "#7fb37f"
                 }
                 StatCard {
                     label: "МИНИМУМ"
-                    value: stats && stats.minScore !== undefined ? stats.minScore : "—"
+                    value: stats && stats.minScore !== undefined ? stats.minScore : "-"
                     accentColor: "#c47878"
                 }
                 StatCard {
                     label: "СРЕДНИЙ"
-                    value: stats && stats.meanScore !== undefined ? stats.meanScore.toFixed(1) : "—"
+                    value: stats && stats.meanScore !== undefined ? stats.meanScore.toFixed(1) : "-"
                     accentColor: "#7f9cc4"
                 }
                 StatCard {
                     label: "МЕДИАНА"
-                    value: stats && stats.midScore !== undefined ? stats.midScore.toFixed(1) : "—"
+                    value: stats && stats.midScore !== undefined ? stats.midScore.toFixed(1) : "-"
                     accentColor: "#a37fc4"
                 }
             }

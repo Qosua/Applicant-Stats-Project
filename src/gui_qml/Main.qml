@@ -47,6 +47,7 @@ Window {
 
         Rectangle {
             color: "#7160a8"
+
         }
     }
 

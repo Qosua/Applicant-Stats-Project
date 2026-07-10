@@ -50,7 +50,7 @@ Rectangle {
             Layout.alignment: Qt.AlignHCenter
 
             btnIconSource: "qrc:/resources/icons/menu-burger.png"
-            btnToolTipName: " Найстройка правил приёма "
+            btnToolTipName: " Найстройка шаблонов правил приёма "
 
             isBtnChecked: (window.currentPageIndex === 1)
 

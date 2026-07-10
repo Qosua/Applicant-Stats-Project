@@ -61,7 +61,7 @@ void TableParserBachelor::parseTable() {
 	info.setCode(extractCode(priorityFullName));
 	info.setName(extractName(priorityFullName));
 	info.setStudyForm(extractStudyForm(priorityFullName));
-	info.setStudyType(extractType(priorityFullName));
+	info.setStudyType(extractStudyType(priorityFullName));
 
 	info.setId(applicantId);
 	info.setAdmissionFlag((m_applicantsTable->read(i, m_columnsNames["Согласие на зачисление"])
@@ -293,7 +293,7 @@ StudyForm TableParserBachelor::extractStudyForm(const QString& str) {
     return StudyForm::Error;
 }
 
-StudyType TableParserBachelor::extractType(const QString& str) {
+StudyType TableParserBachelor::extractStudyType(const QString& str) {
 
     if (str.contains("Бюджет")) {
 	return StudyType::Budget;

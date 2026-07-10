@@ -67,7 +67,9 @@ Rectangle {
                 categories: {
                     let cats = []
                     for (let i = 0; i < root.distribution.length; ++i)
-                        cats.push(String(root.firstBucketScore + i * root.bucketStep))
+                        if(i % 2 === 0)
+                            cats.push(String(root.firstBucketScore + i * root.bucketStep))
+
                     return cats
                 }
 

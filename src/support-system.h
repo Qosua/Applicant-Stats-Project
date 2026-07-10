@@ -23,9 +23,6 @@ public:
 	if (!QDir().exists(SupportSystem::appDataPath))
 	    result *= QDir().mkdir(appDataPath);
 
-	if (!QDir().exists(SupportSystem::appConfigPath))
-	    result *= QDir().mkdir(appConfigPath);
-
 	if (!result)
 	    qDebug() << "SupportSystem INIT ERROR";
     }
@@ -45,10 +42,6 @@ public:
     inline const static QString appDataPath
         = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
           + "/Applicants-Stats-Project/data";
-
-    inline const static QString appConfigPath
-        = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
-          + "/Applicants-Stats-Project/config";
 
     inline const static QString appCachePath
         = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)

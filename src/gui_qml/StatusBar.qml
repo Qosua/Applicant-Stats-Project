@@ -27,6 +27,8 @@ Rectangle {
             property var arr: qmlHelper.currentTablePath.split("/")
             id: pathText
 
+            Layout.preferredWidth: parent.width/5
+
             text: (arr.length && arr[arr.length - 1] !== ""
                 ? "Таблица: " + arr[arr.length - 1]
                 : "Файл не выбран")
@@ -41,8 +43,9 @@ Rectangle {
 
         Rectangle {
             Layout.preferredHeight: parent.height
-            Layout.preferredWidth: 400
+            Layout.preferredWidth: parent.width/5
             color: "transparent"
+
 
             RowLayout {
                 anchors.fill: parent
@@ -81,6 +84,10 @@ Rectangle {
         }
 
         Text {
+            Layout.preferredWidth: parent.width/5
+
+            horizontalAlignment: Text.AlignRight
+
             text: "Версия: " + qmlHelper.appVersion
             font.pointSize: 11
             color: "#cccccc"

@@ -24,6 +24,7 @@ find_package(Qt6 COMPONENTS
         Quick
         Graphs
         Sql
+        QuickControls2
         REQUIRED)
 
 add_executable(ApplicantStatsProject
@@ -78,6 +79,7 @@ qt_add_qml_module(ApplicantStatsProject
         src/gui_qml/stats-page/DirectionStatsPage.qml
         src/gui_qml/stats-page/EmptyStatsPlaceholder.qml
         src/gui_qml/components/ScoreDist.qml
+        src/gui_qml/components/CustomComboBox.qml
 )
 
 target_link_libraries(ApplicantStatsProject PRIVATE
@@ -89,6 +91,7 @@ target_link_libraries(ApplicantStatsProject PRIVATE
         Qt6::Graphs
         Qt6::Sql
         QXlsx::QXlsx
+        Qt6::QuickControls2
         $<$<PLATFORM_ID:Windows>:dwmapi>
 )
 

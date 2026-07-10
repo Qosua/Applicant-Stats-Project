@@ -40,7 +40,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.left: parent.left
 
-        height: 36
+        height: 38
         color: "transparent"
 
         property bool sortFlag: false
@@ -54,7 +54,7 @@ Rectangle {
 
             PageButton {
                 Layout.preferredHeight: parent.height
-                Layout.preferredWidth: parent.height
+                Layout.preferredWidth: parent.height + 7
 
                 btnIconSource: !tablesList.collapsed ? "qrc:/resources/icons/angle-down.png" : "qrc:/resources/icons/angle-up.png"
                 btnIconColor: "#aeaeae"
@@ -80,7 +80,7 @@ Rectangle {
             }
             PageButton {
                 Layout.preferredHeight: parent.height
-                Layout.preferredWidth: parent.height
+                Layout.preferredWidth: parent.height + 7
 
                 btnIconSource: "qrc:/resources/icons/plus.png"
                 btnIconColor: "#aeaeae"
@@ -95,7 +95,7 @@ Rectangle {
             }
             PageButton {
                 Layout.preferredHeight: parent.height
-                Layout.preferredWidth: parent.height
+                Layout.preferredWidth: parent.height + 7
 
                 btnIconSource: "qrc:/resources/icons/folder.png"
                 btnIconColor: "#aeaeae"
@@ -113,7 +113,7 @@ Rectangle {
                 property bool sortFlag: true
 
                 Layout.preferredHeight: parent.height
-                Layout.preferredWidth: parent.height
+                Layout.preferredWidth: parent.height + 7
 
                 btnIconSource: "qrc:/resources/icons/sort-alpha-down.png"
                 btnIconColor: "#aeaeae"
@@ -163,7 +163,7 @@ Rectangle {
 
             id: listView
             model: sortFilterProxyModel
-            spacing: 2
+            spacing: 5
             clip: true
             boundsBehavior: Flickable.StopAtBounds
 
@@ -174,13 +174,13 @@ Rectangle {
 
                 readonly property bool selected: qmlHelper.currentTablePath === tableFullPath
 
-                width: viewRect.width - 10
-                height: 30
-                radius: 8
+                implicitWidth: viewRect.width - 10
+                implicitHeight: 60
+                radius: 10
 
                 color: {
                     if (selected)
-                        return "#3a4660"
+                        return "#2d374e"
                     if (delegatHover.hovered)
                         return "#3f4247"
                     return "#2c2e32"
@@ -201,34 +201,71 @@ Rectangle {
                         cursorShape: Qt.PointingHandCursor
                     }
                 }
-                Text {
-                    id: tableLastChangeDateText
-                    text: "(" + tableLastChangeDate + ")"
-                    font.pointSize: 9
-                    color: "#999999"
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.margins: 4
-                }
+
                 Image {
                     id: icon
                     source: tableIconPath
-                    height: parent.height - 10
-                    width: parent.height - 10
-                    //fillMode: Image.PreserveAspectFit
-                    anchors.left: tableLastChangeDateText.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.margins: 6
+                    height: 20
+                    width: 20
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.margins: 5
+                    anchors.leftMargin: 8
+                }
+                Text {
+                    id: tableLastChangeDateText
+                    text: "(" + model.tableLastChangeDate + ")"
+                    elide: Text.ElideRight
+                    font.pointSize: 11
+                    color: "#999999"
+                    anchors.top: parent.top
+                    anchors.left: icon.right
+                    anchors.margins: 5
                 }
                 Text {
                     id: tableNameText
                     text: tableName
-                    font.pointSize: 10
+                    elide: Text.ElideRight
+                    font.pointSize: 11
                     color: "#eeeeee"
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: icon.right
-                    anchors.leftMargin: 4
+                    anchors.top: parent.top
+                    anchors.left: tableLastChangeDateText.right
+                    anchors.right: updateButton.left
+                    anchors.margins: 5
                 }
+                CustomComboBox {
+
+                    implicitHeight: 27
+
+                    anchors.left: parent.left
+                    anchors.right: updateButton.left
+                    anchors.top: icon.bottom
+                    anchors.margins: 5
+                }
+                PageButton {
+
+                    id: updateButton
+
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    anchors.right: parent.right
+                    anchors.margins: 10
+
+                    implicitWidth: parent.height - 20
+
+                    btnIconSource: "qrc:/resources/icons/update-60.png"
+                    btnIconColor: "#aeaeae"
+                    btnToolTipName: "обновить"
+                    btnToolTipDelay: 700
+                    iconSize: 24
+
+                    onClicked: {
+                        qmlHelper.currentTablePath = tableFullPath
+                        qmlHelper.sendSignalToProceedTable(tableName)
+                    }
+
+                }
+
 
             }
         }

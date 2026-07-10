@@ -86,6 +86,7 @@ TreeView {
             Label {
                 visible: !model.isDivision
                 text: model.code ?? "ОШИБКА КОДА НАПРАВЛЕНИЯ"
+                elide: Text.ElideRight
                 font.pixelSize: 14
                 color: "#888888"
                 verticalAlignment: Text.AlignVCenter
@@ -93,6 +94,7 @@ TreeView {
             }
             Label {
                 text: model.display
+                elide: Text.ElideRight
                 color: "#CCCCCC"
                 font.pixelSize: model.isDivision ? 16 : 14
                 verticalAlignment: Text.AlignVCenter
@@ -101,6 +103,7 @@ TreeView {
             Label {
                 visible: (!model.isDivision && model.studyForm !== "")
                 text: model.studyForm ?? "ОШИБКА ФОРМЫ ОБУЧЕНИЯ"
+                elide: Text.ElideRight
                 font.pixelSize: 14
                 color: "#6c758a"
                 verticalAlignment: Text.AlignVCenter
@@ -109,6 +112,7 @@ TreeView {
             Label {
                 visible: !model.isDivision
                 text: model.studyType ?? "ОШИБКА ВИДА ОБУЧЕНИЯ"
+                elide: Text.ElideRight
                 font.pixelSize: 14
                 color: "#87a586"
                 verticalAlignment: Text.AlignVCenter
