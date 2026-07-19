@@ -9,7 +9,7 @@ Item {
     readonly property string facultyName: payload ? (payload.facultyName ?? "") : ""
 
     readonly property var stats: facultyName !== ""
-        ? cppStats.facultyStats(facultyName)
+        ? statsPageModel.facultyStats(facultyName)
         : null
 
     ColumnLayout {

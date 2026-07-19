@@ -7,11 +7,22 @@ Item {
     id: page
 
     property var payload: null
-    readonly property int sourceIndex: payload ? (payload.sourceIndex ?? -1) : -1
+    property int sourceIndex: payload ? (payload.sourceIndex ?? -1) : -1
+    property var stats: null
 
-    readonly property var stats: sourceIndex >= 0
-        ? cppStats.directionStatsAt(sourceIndex)
-        : null
+    function reloadStats() {
+        stats = (sourceIndex >= 0)
+            ? statsPageModel.directionStatsAt(sourceIndex)
+            : null
+    }
+
+    Connections {
+        target: statsPageModel
+        function onLoadDirectionPage(index) { page.reloadStats() }
+    }
+
+    onSourceIndexChanged: reloadStats()
+    Component.onCompleted: reloadStats()
 
     //panel component
     component StatCard: Rectangle {

@@ -11,7 +11,9 @@ void TreeViewModel::setFaculties(std::shared_ptr<QList<FacultyDirection>> facult
     m_faculties = faculties;
     buildTree();
     endResetModel();
+
 }
+
 
 void TreeViewModel::buildTree() {
 
@@ -145,7 +147,7 @@ QVariant TreeViewModel::data(const QModelIndex &index, int role) const {
 		return {};
 	    switch (m_faculties->at(node->sourceIndex).studyForm()) {
 		case StudyForm::Personal:
-		    return QStringLiteral("");
+		    return QStringLiteral("Очная");
 		case StudyForm::NotPersonal:
 		    return QStringLiteral("Заочная");
 		case StudyForm::PersonalNotPersonal:
@@ -186,7 +188,7 @@ QHash<int, QByteArray> TreeViewModel::roleNames() const {
         {Qt::DisplayRole, "display"}, {NameRole, "name"},
         {CodeRole, "code"},           {CapacityRole, "capacity"},
         {PoolSizeRole, "poolSize"},   {StudyFormRole, "studyForm"},
-        {StudyTypeRole, "studyType"}, {IsDivisionRole, "isDivision"},
+        {StudyTypeRole, "studyType"}, {IsDivisionRole, "isFaculty"},
         {DepthRole, "depth"},         {SourceIndexRole, "sourceIndex"},
     };
 }

@@ -9,7 +9,7 @@
 
 #include "../applicants-faculty-data/faculty-direction.h"
 #include "../applicants-faculty-data/table-parser-bachelor.h"
-#include "../support-system.h"
+#include "../utils/support-system.h"
 #include "magic-hat.h"
 
 class CacheManager : public QObject {
@@ -21,13 +21,13 @@ public:
     static QString tableLastChangeDate(const QString& tableName);
 
 signals:
-    void processTable(const QString& tableName);
+    void processTable(const QString& tableName, const QVariantList& infoList);
     void sendProceededData(std::shared_ptr<QList<FacultyDirection>> data);
     void waitForFinish();
     void finished();
 
 private:
-    void processTableHandle(const QString& tableName);
+    void processTableHandle(const QString& tableName, const QVariantList& infoList);
     std::shared_ptr<QList<FacultyDirection>> loadCache(const QString& tableName);
     std::shared_ptr<QList<FacultyDirection>> makeCache(const QString& tableName);
     static void saveCache(const std::shared_ptr<QList<FacultyDirection>>& data,

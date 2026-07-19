@@ -55,6 +55,17 @@ Window {
         id: statusBar
     }
 
+    Rectangle {
+        id: dimOverlay
+        anchors.fill: parent
+        color: "#000000"
+        opacity: 0.45
+        visible: false
+        Behavior on opacity {
+            NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
+        }
+    }
+
 }
 
 

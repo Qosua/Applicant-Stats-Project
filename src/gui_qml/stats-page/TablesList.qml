@@ -15,7 +15,6 @@ Rectangle {
         id: dropArea
         anchors.fill: parent
 
-        // Фильтр — принимаем только файлы
         keys: ["text/uri-list"]
 
         onEntered: (drag) => {
@@ -28,7 +27,7 @@ Rectangle {
                     let path = drop.urls[i].toString()
                     path = path.replace(/^file:\/\/\//, "")
 
-                    qmlHelper.copyFileToAppdata(path)
+                    qmlHelper.addNewTable(path)
                 }
             }
         }
@@ -89,7 +88,7 @@ Rectangle {
                 iconSize: 20
 
                 onClicked: {
-                    qmlHelper.addTableFromExploler();
+                    qmlHelper.addNewTableFromExploler();
                 }
 
             }
@@ -104,7 +103,7 @@ Rectangle {
                 iconSize: 20
 
                 onClicked: {
-                    qmlHelper.openAppDataFolder();
+                    qmlHelper.openAppCacheFolder();
                 }
 
             }
@@ -172,6 +171,8 @@ Rectangle {
 
             delegate: Rectangle {
 
+                id: delegat
+
                 readonly property bool selected: qmlHelper.currentTablePath === tableFullPath
 
                 implicitWidth: viewRect.width - 10
@@ -194,7 +195,7 @@ Rectangle {
                     anchors.fill: parent
                     onClicked: {
                         qmlHelper.currentTablePath = tableFullPath
-                        qmlHelper.sendSignalToProceedTable(tableName)
+                        qmlHelper.sendSignalToProceedTable(tableName, customComboBox.currentValue)
                     }
                     HoverHandler {
                         id: delegatHover
@@ -204,7 +205,7 @@ Rectangle {
 
                 Image {
                     id: icon
-                    source: tableIconPath
+                    source: model.tableIconPath
                     height: 20
                     width: 20
                     anchors.top: parent.top
@@ -224,7 +225,7 @@ Rectangle {
                 }
                 Text {
                     id: tableNameText
-                    text: tableName
+                    text: model.tableName
                     elide: Text.ElideRight
                     font.pointSize: 11
                     color: "#eeeeee"
@@ -235,7 +236,18 @@ Rectangle {
                 }
                 CustomComboBox {
 
+                    id: customComboBox
+
                     implicitHeight: 27
+                    comboBoxModel: entryCommisionsListModel
+
+                    Component.onCompleted: {
+                        currentIndex = (entryCommisionId ? (entryCommisionId != -1 ? entryCommisionId : 0) : 0)
+                    }
+
+                    onCurrentIndexChanged: {
+                        tablesListModel.setNewCurrentIndex(indexInArray, currentIndex)
+                    }
 
                     anchors.left: parent.left
                     anchors.right: updateButton.left
@@ -261,7 +273,7 @@ Rectangle {
 
                     onClicked: {
                         qmlHelper.currentTablePath = tableFullPath
-                        qmlHelper.sendSignalToProceedTable(tableName)
+                        qmlHelper.sendSignalToProceedTable(tableName, customComboBox.currentValue)
                     }
 
                 }

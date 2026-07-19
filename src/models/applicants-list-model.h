@@ -8,8 +8,8 @@
 #include <QString>
 #include <memory>
 
-#include "../support-system.h"
 #include "../applicants-faculty-data/applicant.h"
+#include "../utils/support-system.h"
 
 class ApplicantsListModel : public QAbstractListModel {
     Q_OBJECT
@@ -17,12 +17,12 @@ public:
     enum ApplicantsListRoles {
         applicantNameRole = Qt::UserRole + 1,
         idRole,
-	scoreRole,
-	phoneRole,
-	emailRole,
+	    scoreRole,
+	    phoneRole,
+	    emailRole,
     };
 
-    ApplicantsListModel(QObject *parent = nullptr);
+    explicit ApplicantsListModel(QObject *parent = nullptr);
     ~ApplicantsListModel() override;
 
     void setApplicantsList(const QList<QPair<PriorityInfo, Applicant>> &data);

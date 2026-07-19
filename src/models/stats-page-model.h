@@ -58,17 +58,33 @@ public:
 
     Q_INVOKABLE QMap<QString, QVariant> directionStatsAt(int index) const;
     Q_INVOKABLE QMap<QString, QVariant> facultyStats(const QString &name) const;
+    Q_INVOKABLE void setLastChosenDirectionInfo(const QString & lastChosenCode, const QString & lastChosenDirectionName,
+                                                const QString & lastChosenStudyType, const QString & lastChosenStudyForm);
+    Q_INVOKABLE void setLastChosenFacultyInfo(const QString & lastChosenFacultyName);
 
     std::shared_ptr<ApplicantsListModel> getApplicantsListModel() const;
+
+signals:
+    void loadDirectionPage(const int& index);
+    void loadFacultyPage(const QString& facultyName);
+    void nothingToLoad();
 
 private:
     void rebuildDirectionStats();
     void rebuildFacultyStats();
+    void gettingReadyPrevPage();
 
-    std::shared_ptr<QList<FacultyDirection>> m_source;
-    QList<DirectionStats> m_directions;
-    QList<FacultyStats> m_faculties;
+    std::shared_ptr<QList<FacultyDirection>> m_facultiesList;
     std::shared_ptr<ApplicantsListModel> m_applicantsListModel;
+
+    QList<DirectionStats> m_directionsStats;
+    QList<FacultyStats> m_facultiesStats;
+
+    QString m_lastChosenCode;
+    QString m_lastChosenDirectionName;
+    QString m_lastChosenStudyType;
+    QString m_lastChosenStudyForm;
+    QString m_lastChosenFacultyName;
 };
 
 #endif  // APPLICANTSTATSPROJECT_STATSPAGEMODEL_H

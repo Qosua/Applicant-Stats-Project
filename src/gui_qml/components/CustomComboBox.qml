@@ -1,17 +1,25 @@
 import QtQuick
 import QtQuick.Controls
+import ApplicantStatsProjectModule
 
 ComboBox {
-
-    property var comboBoxModel: ["Очная", "Заочная", "Очно-заочная"]
-    property bool
-
     id: comboBox
+
+    property var comboBoxModel: []
+    property var entryCommisionInfoToSend: []
+
     model: comboBoxModel
+    valueRole: "entryCommisionNameYearIsBachelor"
+    currentIndex: 0
 
     contentItem: Text {
-        leftPadding: 12
-        text: comboBox.displayText
+        text: comboBox.currentValue ?
+            comboBox.currentValue[0] + "-"
+            + (comboBox.currentValue[1] ? "Бакалавры" : "Магистры") + "-"
+            + comboBox.currentValue[2]
+            : ""
+
+        leftPadding: 8
         color: "#cccccc"
         font.pixelSize: 14
         verticalAlignment: Text.AlignVCenter
@@ -20,8 +28,8 @@ ComboBox {
 
     background: Rectangle {
         radius: 8
-        color: comboBox.hovered ? "#34363a" : "#232527"
-        border.color: comboBox.popup.visible ? "#556da3" : "#323232"
+        color: comboBox.hovered ? "#292b2e" : "#232527"
+        border.color: (comboBox.popup.visible || comboBox.hovered) ? "#556da3" : "#323232"
         border.width: 1
 
         Behavior on color {
@@ -42,7 +50,11 @@ ComboBox {
         height: 30
 
         contentItem: Text {
-            text: modelData
+            text: (model.entryCommisionName
+                + "-"
+                + (model.entryCommisionIsBachelor ? "Бакалары" : "Магистры")
+                + "-"
+                + model.entryCommisionYear)
             color: "#cccccc"
             font.pixelSize: 14
             verticalAlignment: Text.AlignVCenter

@@ -6,25 +6,52 @@ StatsPageModel::StatsPageModel() {
 
 void StatsPageModel::setFaculties(std::shared_ptr<QList<FacultyDirection>> data) {
 
-    m_source = std::move(data);
+    m_facultiesList = std::move(data);
     rebuildDirectionStats();
     rebuildFacultyStats();
+    gettingReadyPrevPage();
 }
 
 std::shared_ptr<ApplicantsListModel> StatsPageModel::getApplicantsListModel() {
     return m_applicantsListModel;
 }
 
+void StatsPageModel::setLastChosenDirectionInfo(const QString & lastChosenCode, const QString & lastChosenDirectionName,
+                                       const QString & lastChosenStudyType, const QString & lastChosenStudyForm) {
+
+    m_lastChosenCode.clear();
+    m_lastChosenDirectionName.clear();
+    m_lastChosenStudyType.clear();
+    m_lastChosenStudyForm.clear();
+    m_lastChosenFacultyName.clear();
+
+    m_lastChosenCode = lastChosenCode;
+    m_lastChosenDirectionName = lastChosenDirectionName;
+    m_lastChosenStudyType = lastChosenStudyType;
+    m_lastChosenStudyForm = lastChosenStudyForm;
+}
+
+void StatsPageModel::setLastChosenFacultyInfo(const QString & lastChosenFacultyName) {
+
+    m_lastChosenCode.clear();
+    m_lastChosenDirectionName.clear();
+    m_lastChosenStudyType.clear();
+    m_lastChosenStudyForm.clear();
+    m_lastChosenFacultyName.clear();
+
+    m_lastChosenFacultyName = lastChosenFacultyName;
+}
+
 void StatsPageModel::rebuildDirectionStats() {
 
-    m_directions.clear();
-    if (!m_source)
+    m_directionsStats.clear();
+    if (!m_facultiesList)
 	return;
 
-    m_directions.reserve(m_source->size());
+    m_directionsStats.reserve(m_facultiesList->size());
 
-    for (int i = 0; i < m_source->size(); ++i) {
-	const FacultyDirection& dir = m_source->at(i);
+    for (int i = 0; i < m_facultiesList->size(); ++i) {
+	const FacultyDirection& dir = m_facultiesList->at(i);
 	const auto& pool = dir.pool();
 
 	DirectionStats d;
@@ -60,30 +87,30 @@ void StatsPageModel::rebuildDirectionStats() {
 	    d.meanSumScore = static_cast<double>(sum) / pool.size();
 	}
 
-	m_directions.append(std::move(d));
+	m_directionsStats.append(std::move(d));
     }
 }
 
 void StatsPageModel::rebuildFacultyStats() {
 
-    m_faculties.clear();
-    if (m_directions.isEmpty())
+    m_facultiesStats.clear();
+    if (m_directionsStats.isEmpty())
 	return;
 
     QHash<QString, int> facultyIndex;
 
-    for (int i = 0; i < m_directions.size(); ++i) {
-	const DirectionStats& d = m_directions[i];
+    for (int i = 0; i < m_directionsStats.size(); ++i) {
+	const DirectionStats& d = m_directionsStats[i];
 
 	auto it = facultyIndex.find(d.facultyName);
 	if (it == facultyIndex.end()) {
 	    FacultyStats f;
 	    f.facultyName = d.facultyName;
-	    m_faculties.append(std::move(f));
-	    it = facultyIndex.insert(d.facultyName, m_faculties.size() - 1);
+	    m_facultiesStats.append(std::move(f));
+	    it = facultyIndex.insert(d.facultyName, m_facultiesStats.size() - 1);
 	}
 
-	FacultyStats& f = m_faculties[*it];
+	FacultyStats& f = m_facultiesStats[*it];
 	f.directionIndices.append(i);
 	f.totalSize += d.size;
 	f.totalCapacity += d.capacity;
@@ -96,11 +123,11 @@ void StatsPageModel::rebuildFacultyStats() {
 	        = f.minSumScore ? std::min(*f.minSumScore, *d.minSumScore) : d.minSumScore;
     }
 
-    for (auto& f : m_faculties) {
+    for (auto& f : m_facultiesStats) {
 	long sum = 0;
 	int total = 0;
 	for (int idx : std::as_const(f.directionIndices)) {
-	    const auto& d = m_directions[idx];
+	    const auto& d = m_directionsStats[idx];
 	    if (d.meanSumScore) {
 		sum += static_cast<long>(*d.meanSumScore * d.size);
 		total += d.size;
@@ -111,14 +138,69 @@ void StatsPageModel::rebuildFacultyStats() {
     }
 }
 
+void StatsPageModel::gettingReadyPrevPage() {
+
+    if (!m_lastChosenFacultyName.isEmpty()) {
+        emit loadFacultyPage(m_lastChosenFacultyName);
+        return;
+    }
+
+    if (m_lastChosenCode.isEmpty() or m_lastChosenDirectionName.isEmpty() or
+        m_lastChosenStudyType.isEmpty() or m_lastChosenStudyForm.isEmpty()) {
+        emit nothingToLoad();
+        return;
+    }
+
+    StudyForm form = StudyForm::Error;
+    StudyType type = StudyType::Error;
+
+    if (m_lastChosenStudyForm.contains("Очное") or m_lastChosenStudyForm.contains("Очная")) {
+        form = StudyForm::Personal;
+    }
+    else if (m_lastChosenStudyForm.contains("Заочная") or m_lastChosenStudyForm.contains("Заочное")) {
+        form = StudyForm::NotPersonal;
+    }
+    else if (m_lastChosenStudyForm.contains("Очно-заочная") or m_lastChosenStudyForm.contains("Очно-заочное")) {
+        form = StudyForm::PersonalNotPersonal;
+    }
+
+    if (m_lastChosenStudyType.contains("Бюджет")) {
+        type = StudyType::Budget;
+    }
+    else if (m_lastChosenStudyType.contains("Отдельная квота") or m_lastChosenStudyType.contains("Отдельное квота")) {
+        type = StudyType::Kvot;
+    }
+    else if (m_lastChosenStudyType.contains("Особое право") or m_lastChosenStudyType.contains("Особая право")) {
+        type = StudyType::SpecialRight;
+    }
+    else if (m_lastChosenStudyType.contains("Внебюджет")) {
+        type = StudyType::NonBudget;
+    }
+    else if (m_lastChosenStudyType.contains("Целевое") or m_lastChosenStudyType.contains("Целевая")) {
+        type = StudyType::CompanySponsor;
+    }
+
+    for (int i = 0; i < m_directionsStats.size(); ++i) {
+        if (m_directionsStats[i].name == m_lastChosenDirectionName and
+            m_directionsStats[i].code == m_lastChosenCode and
+            m_directionsStats[i].type == type and
+            m_directionsStats[i].form == form) {
+            emit loadDirectionPage(i);
+            return;
+        }
+    }
+
+    emit nothingToLoad();
+}
+
 QMap<QString, QVariant> StatsPageModel::directionStatsAt(int index) const {
 
-    if (index < 0 || index >= m_directions.size())
+    if (index < 0 || index >= m_directionsStats.size())
         return {};
 
-    const auto& d = m_directions[index];
+    const auto& d = m_directionsStats[index];
 
-    m_applicantsListModel->setApplicantsList((*m_source)[d.sourceIndex].pool());
+    m_applicantsListModel->setApplicantsList((*m_facultiesList)[d.sourceIndex].pool());
 
     QMap<QString, QVariant> m;
     m["name"]        = d.name;
@@ -180,7 +262,7 @@ QMap<QString, QVariant> StatsPageModel::directionStatsAt(int index) const {
 
 QMap<QString, QVariant> StatsPageModel::facultyStats(const QString& name) const {
 
-    for (const auto& f : m_faculties) {
+    for (const auto& f : m_facultiesStats) {
 
         if (f.facultyName != name)
             continue;
@@ -195,9 +277,10 @@ QMap<QString, QVariant> StatsPageModel::facultyStats(const QString& name) const 
         if (f.meanSumScore) m["meanScore"] = *f.meanSumScore;
         return m;
     }
-    return {};
 
+    return {};
 }
+
 std::shared_ptr<ApplicantsListModel> StatsPageModel::getApplicantsListModel() const {
     return m_applicantsListModel;
 }

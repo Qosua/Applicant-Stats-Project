@@ -4,13 +4,12 @@ import QtQuick.Layouts
 
 TreeView {
     id: treeView
+
     model: treeViewModel
     clip: true
 
     signal directionSelected(int sourceIndex)
-
     signal facultySelected(string facultyName)
-
     signal selectionCleared()
 
     selectionModel: ItemSelectionModel {
@@ -43,12 +42,20 @@ TreeView {
         id: treeDelegate
 
         onClicked: {
-            if (model.isDivision) {
+            if (model.isFaculty) {
                 console.log("Faculty - " + model.display)
                 treeView.facultySelected(model.display)
+
+                statsPageModel.setLastChosenFacultyInfo(model.display);
+
             } else {
                 console.log("Direction - " + model.display)
                 treeView.directionSelected(model.sourceIndex)
+
+                statsPageModel.setLastChosenDirectionInfo(model.code,
+                                                          model.display,
+                                                          model.studyType,
+                                                          model.studyForm);
             }
         }
 
@@ -84,7 +91,7 @@ TreeView {
             spacing: 10
 
             Label {
-                visible: !model.isDivision
+                visible: !model.isFaculty
                 text: model.code ?? "ОШИБКА КОДА НАПРАВЛЕНИЯ"
                 elide: Text.ElideRight
                 font.pixelSize: 14
@@ -96,12 +103,12 @@ TreeView {
                 text: model.display
                 elide: Text.ElideRight
                 color: "#CCCCCC"
-                font.pixelSize: model.isDivision ? 16 : 14
+                font.pixelSize: model.isFaculty ? 16 : 14
                 verticalAlignment: Text.AlignVCenter
                 Layout.fillHeight: true
             }
             Label {
-                visible: (!model.isDivision && model.studyForm !== "")
+                visible: (!model.isFaculty && model.studyForm !== "")
                 text: model.studyForm ?? "ОШИБКА ФОРМЫ ОБУЧЕНИЯ"
                 elide: Text.ElideRight
                 font.pixelSize: 14
@@ -110,7 +117,7 @@ TreeView {
                 Layout.fillHeight: true
             }
             Label {
-                visible: !model.isDivision
+                visible: !model.isFaculty
                 text: model.studyType ?? "ОШИБКА ВИДА ОБУЧЕНИЯ"
                 elide: Text.ElideRight
                 font.pixelSize: 14
@@ -119,11 +126,11 @@ TreeView {
                 Layout.fillHeight: true
             }
             // Label {
-            //     visible: !model.isDivision
+            //     visible: !model.isFaculty
             //     text: (model.poolSize ?? 0) + " / " + (model.capacity ?? 0)
             //     font.pixelSize: 14
             //     color: {
-            //         if (model.isDivision)
+            //         if (model.isFaculty)
             //             return "#888888"
             //         if (model.capacity === 0)
             //             return "#27ae60"

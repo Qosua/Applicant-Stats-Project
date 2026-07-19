@@ -5,9 +5,9 @@ void CacheManager::init() {
     QObject::connect(this, &CacheManager::processTable, this, &CacheManager::processTableHandle);
 }
 
-void CacheManager::processTableHandle(const QString& tableName) {
+void CacheManager::processTableHandle(const QString& tableName, const QVariantList& infoList) {
 
-    qDebug() << "processTable called with:" << tableName;
+    qDebug() << "processTable called with:" << tableName << ":" << infoList;
 
     QDir cacheDir(SupportSystem::appCachePath);
     QList<QString> cacheEntry = cacheDir.entryList();

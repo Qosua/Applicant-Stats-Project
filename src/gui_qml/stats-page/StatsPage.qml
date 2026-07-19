@@ -9,9 +9,11 @@ SplitView {
     function getFileName(mode) {
         if (mode === "faculty") {
             return "FacultyStatsPage.qml"
-        } else if (mode === "direction") {
+        }
+        else if (mode === "direction") {
             return "DirectionStatsPage.qml"
-        } else {
+        }
+        else {
             return "EmptyStatsPlaceholder.qml"
         }
     }
@@ -112,17 +114,29 @@ SplitView {
             anchors.fill: parent
             anchors.margins: 1
 
-            property string mode: "none"   // "none" | "faculty" | "direction"
+            property string mode: "none"
             property var payload: null
 
             source: getFileName(mode)
 
-            onLoaded: if (item && payload)
-                item.payload = payload
+            onLoaded:         if (item) item.payload = payload
+            onPayloadChanged: if (item) item.payload = payload
 
-            onPayloadChanged:
-                if (item && payload)
-                    item.payload = payload
+            Connections {
+                target: statsPageModel
+                function onLoadDirectionPage(index) {
+                    detailLoader.mode = "direction"
+                    detailLoader.payload = { sourceIndex: index }
+                }
+                function onLoadFacultyPage(name) {
+                    detailLoader.mode = "faculty"
+                    detailLoader.payload = { facultyName: name }
+                }
+                function onNothingToLoad() {
+                    detailLoader.mode = "none"
+                    detailLoader.payload = null
+                }
+            }
         }
     }
 
