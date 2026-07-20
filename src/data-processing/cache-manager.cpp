@@ -16,28 +16,28 @@ void CacheManager::processTableHandle(const QString& tableName, const QVariantLi
 
 	QList<QString> parts = entry.split('_');
 
-	if (parts[0] != "cache" or parts[2] != tableNameInCache(tableName))
+	if (parts[0] != "cache" or parts[2] != tableNameInCache(tableName, infoList))
 	    continue;
 
 	if (parts[1] == tableLastChangeDate(tableName)) {
 
-	    auto data = loadCache(tableName);
+	    auto data = loadCache(tableName, infoList);
 	    emit sendProceededData(data);
 	    return;
 	}
     }
 
-    auto data = makeCache(tableName);
+    auto data = makeCache(tableName, infoList);
     emit sendProceededData(data);
 }
 
-std::shared_ptr<QList<FacultyDirection>> CacheManager::loadCache(const QString& tableName) {
+std::shared_ptr<QList<FacultyDirection>> CacheManager::loadCache(const QString& tableName, const QVariantList& infoList) {
     emit waitForFinish();
 
     auto data = std::make_shared<QList<FacultyDirection>>();
 
     QFile file(SupportSystem::appCachePath + +"/cache_" + tableLastChangeDate(tableName) + "_"
-               + tableNameInCache(tableName));
+               + tableNameInCache(tableName, infoList));
 
     if (!file.open(QIODevice::ReadOnly)) {
 	qCritical() << file.errorString();
@@ -53,14 +53,14 @@ std::shared_ptr<QList<FacultyDirection>> CacheManager::loadCache(const QString& 
     return data;
 }
 
-std::shared_ptr<QList<FacultyDirection>> CacheManager::makeCache(const QString& tableName) {
+std::shared_ptr<QList<FacultyDirection>> CacheManager::makeCache(const QString& tableName, const QVariantList& infoList) {
     emit waitForFinish();
 
     TableParserBachelor parserBachelor;
     MagicHat magicHatBachelor;
 
     parserBachelor.setTablePath(SupportSystem::appDataPath + "/" + tableName);
-    parserBachelor.setColumnsNamesPath(":/config/columnsNames.xlsx");
+    parserBachelor.setEntryCommisionInfo(infoList[0].toString(), infoList[1].toBool(), infoList[2].toInt());
     parserBachelor.parseTable();
 
     std::shared_ptr<QList<Applicant>> applicantsList
@@ -75,17 +75,17 @@ std::shared_ptr<QList<FacultyDirection>> CacheManager::makeCache(const QString& 
 
     auto data = magicHatBachelor.faculties();
 
-    saveCache(data, tableName);
+    saveCache(data, tableName, infoList);
 
     emit finished();
     return data;
 }
 
 void CacheManager::saveCache(const std::shared_ptr<QList<FacultyDirection>>& data,
-                             const QString& tableName) {
+                             const QString& tableName, const QVariantList& infoList) {
 
     QFile file(SupportSystem::appCachePath + "/cache_" + tableLastChangeDate(tableName) + "_"
-               + tableNameInCache(tableName));
+               + tableNameInCache(tableName, infoList));
 
     if (!file.open(QIODevice::WriteOnly)) {
 	qCritical() << file.errorString();
@@ -100,11 +100,14 @@ void CacheManager::saveCache(const std::shared_ptr<QList<FacultyDirection>>& dat
     file.close();
 }
 
-QString CacheManager::tableNameInCache(const QString& tableName) {
+QString CacheManager::tableNameInCache(const QString& tableName, const QVariantList& infoList) {
 
     QString tempName = tableName;
-    tempName.replace(' ', '%');
-    tempName.replace('_', '%');
+    tempName.replace(" ", "%");
+    tempName.replace("_", "%");
+    tempName += "%" + infoList.at(0).toString().replace(" ", "%").replace("_", "%");
+    tempName += "%" + infoList.at(1).toString().replace(" ", "%").replace("_", "%");
+    tempName += "%" + infoList.at(2).toString().replace(" ", "%").replace("_", "%");
     tempName += ".bin";
     return tempName;
 }

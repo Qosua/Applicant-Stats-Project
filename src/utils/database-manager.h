@@ -16,10 +16,11 @@ public:
 
     QSqlDatabase &db();
 
-    // Readonly
+    // Read only
     QList<QVariantList> getEntryCommisionsList() const;
     int getEntryCommissionsIndexForTable(const QString& tableName) const;
     bool isTableExist(const QString& tableName) const;
+    QList<QString> getEntryCommisionColumnsNamesListFromDb(const QString& name, bool isBachelor, int year) const;
 
     // Read/Write
     bool changeEntryCommissionsIndexForTable(const QString& tableName, int index);

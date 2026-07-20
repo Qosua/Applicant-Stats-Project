@@ -1,5 +1,7 @@
 #include "table-parser-bachelor.h"
 
+#include "src/utils/database-manager.h"
+
 void TableParserBachelor::setTablePath(const QString& path) {
 
     if (!QFile::exists(path)) {
@@ -9,21 +11,12 @@ void TableParserBachelor::setTablePath(const QString& path) {
     m_tablePath = path;
 }
 
-void TableParserBachelor::setColumnsNamesPath(const QString& path) {
-
-    if (!QFile::exists(path)) {
-	qDebug() << "CAN NOT FIND COLUMNS NAMES FILE" << path << __FILE__ << ":" << __LINE__;
-	return;
-    }
-    m_columnsNamesFilePath = path;
-}
-
 void TableParserBachelor::parseTable() {
 
     m_applicantsTable.reset(new QXlsx::Document(m_tablePath));
     m_applicantsList.reset(new QList<Applicant>);
 
-    setColumnsNames();
+    readColumnNamesFromDB();
 
     QHash<int, Applicant> tempHash;
     int applicantId = 0;
@@ -136,36 +129,36 @@ std::shared_ptr<QList<Applicant>> TableParserBachelor::getApplicants(
     return nullptr;
 }
 
-bool TableParserBachelor::setColumnsNames() {
-
-    QFile file(m_columnsNamesFilePath);
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-	qDebug() << "Не удалось открыть файл " << m_columnsNamesFilePath
-	         << "\n\tОшибка: " << file.errorString();
-	return false;
-    }
-
-    QXlsx::Document columnsNamesTable(m_columnsNamesFilePath);
-
-    for (int j = 2; columnsNamesTable.read(j, 2).isValid(); ++j) {
-
-	for (int i = 1; m_applicantsTable->read(1, i).isValid(); ++i) {
-
-	    QString columnNameInProgram = columnsNamesTable.read(j, 1).toString();
-	    QString columnNameInTable = columnsNamesTable.read(j, 2).toString();
-	    QString columnNameInApplicantsTable = m_applicantsTable->read(1, i).toString();
-
-	    if (columnNameInApplicantsTable == columnNameInTable) {
-
-		m_columnsNames[columnNameInProgram] = i;
-		break;
-	    }
-	}
-    }
-
-    return true;
-}
+// bool TableParserBachelor::setColumnsNames() {
+//
+//     QFile file(m_columnsNamesFilePath);
+//
+//     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+// 	qDebug() << "Не удалось открыть файл " << m_columnsNamesFilePath
+// 	         << "\n\tОшибка: " << file.errorString();
+// 	return false;
+//     }
+//
+//     QXlsx::Document columnsNamesTable(m_columnsNamesFilePath);
+//
+//     for (int j = 2; columnsNamesTable.read(j, 2).isValid(); ++j) {
+//
+// 	for (int i = 1; m_applicantsTable->read(1, i).isValid(); ++i) {
+//
+// 	    QString columnNameInProgram = columnsNamesTable.read(j, 1).toString();
+// 	    QString columnNameInTable = columnsNamesTable.read(j, 2).toString();
+// 	    QString columnNameInApplicantsTable = m_applicantsTable->read(1, i).toString();
+//
+// 	    if (columnNameInApplicantsTable == columnNameInTable) {
+//
+// 		m_columnsNames[columnNameInProgram] = i;
+// 		break;
+// 	    }
+// 	}
+//     }
+//
+//     return true;
+// }
 
 void TableParserBachelor::printStatsToConsole() const {
 
@@ -258,6 +251,18 @@ void TableParserBachelor::printStatsToConsole() const {
 	    }
     qDebug() << " special right priority count -" << counter;
     qDebug() << ">>=====================================================================<<\n";
+}
+
+void TableParserBachelor::readColumnNamesFromDB() {
+
+    QList<QString> columnNames = DataBaseManager::instance().getEntryCommisionColumnsNamesListFromDb(m_entryCommisionName, m_isBachelor, m_year);
+
+}
+void TableParserBachelor::setEntryCommisionInfo(const QString& entryCommisionName, bool isBachelor,
+                                                int year) {
+    m_entryCommisionName = entryCommisionName;
+    m_isBachelor = isBachelor;
+    m_year = year;
 }
 
 QString TableParserBachelor::extractCode(const QString& str) { return str.mid(0, 8); }

@@ -17,7 +17,7 @@ class CacheManager : public QObject {
 public:
     void init();
 
-    static QString tableNameInCache(const QString& tableName);
+    static QString tableNameInCache(const QString& tableName, const QVariantList& infoList);
     static QString tableLastChangeDate(const QString& tableName);
 
 signals:
@@ -28,10 +28,10 @@ signals:
 
 private:
     void processTableHandle(const QString& tableName, const QVariantList& infoList);
-    std::shared_ptr<QList<FacultyDirection>> loadCache(const QString& tableName);
-    std::shared_ptr<QList<FacultyDirection>> makeCache(const QString& tableName);
+    std::shared_ptr<QList<FacultyDirection>> loadCache(const QString& tableName, const QVariantList& infoList);
+    std::shared_ptr<QList<FacultyDirection>> makeCache(const QString& tableName, const QVariantList& infoList);
     static void saveCache(const std::shared_ptr<QList<FacultyDirection>>& data,
-                          const QString& tableName);
+                          const QString& tableName, const QVariantList& infoList);
 };
 
 #endif  // TABLEMANAGER_H

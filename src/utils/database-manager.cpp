@@ -92,6 +92,50 @@ bool DataBaseManager::isTableExist(const QString& tableName) const {
 
     return false;
 }
+QList<QString> DataBaseManager::getEntryCommisionColumnsNamesListFromDb(const QString& name,
+                                                                        bool isBachelor,
+                                                                        int year) const {
+
+    QSqlQuery query(m_db);
+    query.prepare(R"(
+        select unique_code, score, achivments_score, subject_one, subject_two, subject_three, priority_number, consent, competition_group, phone_number, email, FIO, BVI, faculty_name
+        from columns_mapping
+        where entry_commision_id = (select id
+        from entry_commisions
+        where uni_name = :name and
+              is_bachelor = :isBachelor and
+              year = :year
+            );
+    )");
+    query.bindValue(":name", name);
+    query.bindValue(":isBachelor", isBachelor);
+    query.bindValue(":year", year);
+
+    if (!query.exec()) {
+        qCritical() << query.lastError().text();
+        return {};
+    }
+
+    QList<QString> strList;
+    if (query.next()) {
+        strList.append(query.value(0).toString());
+        strList.append(query.value(1).toString());
+        strList.append(query.value(2).toString());
+        strList.append(query.value(3).toString());
+        strList.append(query.value(4).toString());
+        strList.append(query.value(5).toString());
+        strList.append(query.value(6).toString());
+        strList.append(query.value(7).toString());
+        strList.append(query.value(8).toString());
+        strList.append(query.value(9).toString());
+        strList.append(query.value(10).toString());
+        strList.append(query.value(11).toString());
+        strList.append(query.value(12).toString());
+        strList.append(query.value(13).toString());
+    }
+
+    return strList;
+}
 
 bool DataBaseManager::changeEntryCommissionsIndexForTable(const QString& tableName, int index) {
     if (!m_db.isOpen()) {
@@ -120,6 +164,12 @@ bool DataBaseManager::changeEntryCommissionsIndexForTable(const QString& tableNa
 }
 
 void DataBaseManager::addNewTablePreset(const QString& tableName, int commisionIndex) {
+
+    if (isTableExist(tableName)) {
+        changeEntryCommissionsIndexForTable(tableName, commisionIndex);
+        return;
+    }
+
     QSqlQuery query(m_db);
 
     query.prepare(R"(
