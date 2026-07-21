@@ -11,8 +11,9 @@
 #include "models/stats-page-model.h"
 #include "models/tables-list-model.h"
 #include "models/tree-view-model.h"
-#include "utils/qml-helper.h"
 #include "utils/database-manager.h"
+#include "utils/qml-helper.h"
+#include "utils/scripts.h"
 #include "utils/support-system.h"
 #include "utils/window-manager.h"
 
@@ -43,6 +44,8 @@ int main(int argc, char* argv[]) {
     DataBaseManager::instance().init();
     QQuickStyle::setStyle("Basic");
 
+    Scripts::tempScript();
+
     QThread cacheThread;
     CacheManager cacheManager;
 
@@ -70,7 +73,8 @@ int main(int argc, char* argv[]) {
     engine.rootContext()->setContextProperty("treeViewModel", &treeViewModel);
     engine.rootContext()->setContextProperty("statsPageModel", &statsPageModel);
     engine.rootContext()->setContextProperty("entryCommisionsListModel", &entryModel);
-    engine.rootContext()->setContextProperty("applicantsListModel", statsPageModel.getApplicantsListModel().get());
+    engine.rootContext()->setContextProperty("applicantsListModel",
+                                             statsPageModel.getApplicantsListModel().get());
     engine.loadFromModule("ApplicantStatsProjectModule", "Main");
 
     int ret = QApplication::exec();

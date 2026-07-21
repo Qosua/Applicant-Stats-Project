@@ -6,7 +6,7 @@
 
 #include "support-system.h"
 
-DataBaseManager &DataBaseManager::instance() {
+DataBaseManager& DataBaseManager::instance() {
     static DataBaseManager inst;
     return inst;
 }
@@ -16,36 +16,33 @@ bool DataBaseManager::init() {
     m_db.setDatabaseName(SupportSystem::appDbPath);
 
     if (!m_db.open()) {
-        qCritical() << "Database error";
-        return false;
+	qCritical() << "Database error";
+	return false;
     }
 
     QSqlQuery("PRAGMA foreign_keys = ON;", m_db);
     return createDatabase();
 }
 
-QSqlDatabase &DataBaseManager::db() { return m_db; }
+QSqlDatabase& DataBaseManager::db() { return m_db; }
 
 QList<QVariantList> DataBaseManager::getEntryCommisionsList() const {
 
     if (!m_db.isOpen())
-        qCritical() << "DatabaseManager could not open connection to database";
+	qCritical() << "DatabaseManager could not open connection to database";
 
     QSqlQuery query(m_db);
     const QString strQuery = R"(SELECT uni_name, year, is_bachelor FROM entry_commisions;)";
 
     if (!query.exec(strQuery)) {
-        qCritical() << query.lastError().text();
-        return {};
+	qCritical() << query.lastError().text();
+	return {};
     }
 
     QList<QVariantList> list;
     while (query.next()) {
-        list << QVariantList{
-            query.value("uni_name").toString(),
-            query.value("is_bachelor").toBool(),
-            query.value("year").toInt()
-        };
+	list << QVariantList{query.value("uni_name").toString(),
+	                     query.value("is_bachelor").toBool(), query.value("year").toInt()};
     }
 
     return list;
@@ -54,24 +51,25 @@ QList<QVariantList> DataBaseManager::getEntryCommisionsList() const {
 int DataBaseManager::getEntryCommissionsIndexForTable(const QString& tableName) const {
 
     if (!m_db.isOpen()) {
-        qCritical() << "DatabaseManager could not open connection to database";
-        return -1;
+	qCritical() << "DatabaseManager could not open connection to database";
+	return -1;
     }
 
     QSqlQuery query(m_db);
-    if (!query.prepare(R"(SELECT entry_commision_id FROM current_table_presets WHERE tableName = :tName)")) {
-        qCritical() << query.lastError().text();
-        return -1;
+    if (!query.prepare(
+            R"(SELECT entry_commision_id FROM current_table_presets WHERE tableName = :tName)")) {
+	qCritical() << query.lastError().text();
+	return -1;
     }
     query.bindValue(":tName", tableName);
 
     if (!query.exec()) {
-        qCritical() << query.lastError().text();
-        return -1;
+	qCritical() << query.lastError().text();
+	return -1;
     }
 
     if (query.next())
-        return query.value(0).toInt();
+	return query.value(0).toInt();
 
     return -1;
 }
@@ -79,16 +77,17 @@ int DataBaseManager::getEntryCommissionsIndexForTable(const QString& tableName) 
 bool DataBaseManager::isTableExist(const QString& tableName) const {
 
     QSqlQuery query(m_db);
-    query.prepare(R"(SELECT EXISTS(SELECT 1 FROM current_table_presets WHERE tableName = :tableName);)");
+    query.prepare(
+        R"(SELECT EXISTS(SELECT 1 FROM current_table_presets WHERE tableName = :tableName);)");
     query.bindValue(":tableName", tableName);
 
     if (!query.exec()) {
-        qCritical() << query.lastError().text();
-        return false;
+	qCritical() << query.lastError().text();
+	return false;
     }
 
     if (query.next() and query.value(0).toInt() == 1)
-        return true;
+	return true;
 
     return false;
 }
@@ -112,26 +111,26 @@ QList<QString> DataBaseManager::getEntryCommisionColumnsNamesListFromDb(const QS
     query.bindValue(":year", year);
 
     if (!query.exec()) {
-        qCritical() << query.lastError().text();
-        return {};
+	qCritical() << query.lastError().text();
+	return {};
     }
 
     QList<QString> strList;
     if (query.next()) {
-        strList.append(query.value(0).toString());
-        strList.append(query.value(1).toString());
-        strList.append(query.value(2).toString());
-        strList.append(query.value(3).toString());
-        strList.append(query.value(4).toString());
-        strList.append(query.value(5).toString());
-        strList.append(query.value(6).toString());
-        strList.append(query.value(7).toString());
-        strList.append(query.value(8).toString());
-        strList.append(query.value(9).toString());
-        strList.append(query.value(10).toString());
-        strList.append(query.value(11).toString());
-        strList.append(query.value(12).toString());
-        strList.append(query.value(13).toString());
+	strList.append(query.value(0).toString());
+	strList.append(query.value(1).toString());
+	strList.append(query.value(2).toString());
+	strList.append(query.value(3).toString());
+	strList.append(query.value(4).toString());
+	strList.append(query.value(5).toString());
+	strList.append(query.value(6).toString());
+	strList.append(query.value(7).toString());
+	strList.append(query.value(8).toString());
+	strList.append(query.value(9).toString());
+	strList.append(query.value(10).toString());
+	strList.append(query.value(11).toString());
+	strList.append(query.value(12).toString());
+	strList.append(query.value(13).toString());
     }
 
     return strList;
@@ -139,8 +138,8 @@ QList<QString> DataBaseManager::getEntryCommisionColumnsNamesListFromDb(const QS
 
 bool DataBaseManager::changeEntryCommissionsIndexForTable(const QString& tableName, int index) {
     if (!m_db.isOpen()) {
-        qCritical() << "DatabaseManager could not open connection to database";
-        return false;
+	qCritical() << "DatabaseManager could not open connection to database";
+	return false;
     }
 
     QSqlQuery query(m_db);
@@ -149,15 +148,15 @@ bool DataBaseManager::changeEntryCommissionsIndexForTable(const QString& tableNa
             SET entry_commision_id = :newID
             WHERE tableName = :tName )")) {
 
-        qCritical() << query.lastError().text();
-        return false;
+	qCritical() << query.lastError().text();
+	return false;
     }
     query.bindValue(":tName", tableName);
     query.bindValue(":newID", index);
 
     if (!query.exec()) {
-        qCritical() << query.lastError().text();
-        return false;
+	qCritical() << query.lastError().text();
+	return false;
     }
 
     return true;
@@ -166,8 +165,8 @@ bool DataBaseManager::changeEntryCommissionsIndexForTable(const QString& tableNa
 void DataBaseManager::addNewTablePreset(const QString& tableName, int commisionIndex) {
 
     if (isTableExist(tableName)) {
-        changeEntryCommissionsIndexForTable(tableName, commisionIndex);
-        return;
+	changeEntryCommissionsIndexForTable(tableName, commisionIndex);
+	return;
     }
 
     QSqlQuery query(m_db);
@@ -182,8 +181,8 @@ void DataBaseManager::addNewTablePreset(const QString& tableName, int commisionI
     query.bindValue(":entry_commision_id", commisionIndex);
 
     if (!query.exec()) {
-        qCritical() << query.lastError().text();
-        return;
+	qCritical() << query.lastError().text();
+	return;
     }
 }
 
@@ -241,16 +240,26 @@ bool DataBaseManager::createDatabase() {
         );
     )";
     const QString strQuery4 = R"(
-        CREATE INDEX IF NOT EXISTS idx_kcp_commision ON kcp(entry_commision_id)
+        CREATE TABLE IF NOT EXISTS "current_table_presets" (
+            "id" INTEGER NOT NULL,
+            "tableName" TEXT NOT NULL,
+            "entry_commision_id" TEXT NULL,
+            PRIMARY KEY("id"),
+            CONSTRAINT "current_table_presets_unique_0" UNIQUE ("entry_commision_id", "tableName")
+            FOREIGN KEY ("entry_commision_id") REFERENCES "entry_commisions"("id")
+            ON UPDATE CASCADE ON DELETE CASCADE
+        );
     )";
     const QString strQuery5 = R"(
+        CREATE INDEX IF NOT EXISTS idx_kcp_commision ON kcp(entry_commision_id)
+    )";
+    const QString strQuery6 = R"(
         CREATE INDEX IF NOT EXISTS idx_columns_mapping_commision ON columns_mapping(entry_commision_id)
     )";
 
-    if (query.exec(strQuery1) and query.exec(strQuery2) and
-        query.exec(strQuery3) and query.exec(strQuery4) and
-        query.exec(strQuery5)) {
-        return true;
+    if (query.exec(strQuery1) and query.exec(strQuery2) and query.exec(strQuery3)
+        and query.exec(strQuery4) and query.exec(strQuery5) and query.exec(strQuery6)) {
+	return true;
     }
 
     return false;

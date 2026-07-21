@@ -255,9 +255,94 @@ void TableParserBachelor::printStatsToConsole() const {
 
 void TableParserBachelor::readColumnNamesFromDB() {
 
-    QList<QString> columnNames = DataBaseManager::instance().getEntryCommisionColumnsNamesListFromDb(m_entryCommisionName, m_isBachelor, m_year);
+    QList<QString> columnNames
+        = DataBaseManager::instance().getEntryCommisionColumnsNamesListFromDb(m_entryCommisionName,
+                                                                              m_isBachelor, m_year);
 
+    m_columnsNames.clear();
+
+    QFile file(m_columnsNamesFilePath);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+	qDebug() << "Не удалось открыть файл " << m_columnsNamesFilePath
+	         << "\n\tОшибка: " << file.errorString();
+    }
+
+    QList<QPair<QString, QString>> namesList(14);
+    int i = 0;
+    namesList[i].first = "Уникальный код";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "Сумма баллов";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "Сумма баллов за инд.дост.(конкурсные)";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "Предмет 1";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "Предмет 2";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "Предмет 3";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "Приоритет";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "Согласие на зачисление";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "Конкурсная группа";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "Телефон";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "E-mail";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "ФИО";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "Без вступительных испытаний";
+    namesList[i].second = columnNames[i];
+
+    i += 1;
+    namesList[i].first = "Имя факультета";
+    namesList[i].second = columnNames[i];
+
+    QXlsx::Document columnsNamesTable(m_columnsNamesFilePath);
+
+    for (auto const pair : namesList) {
+
+	for (int i = 1; m_applicantsTable->read(1, i).isValid(); ++i) {
+
+	    QString columnNameInProgram = pair.first;
+	    QString columnNameInTable = pair.second;
+
+	    if (m_applicantsTable->read(1, i).toString() == columnNameInTable) {
+
+		m_columnsNames[columnNameInProgram] = i;
+		break;
+	    }
+	}
+    }
 }
+
 void TableParserBachelor::setEntryCommisionInfo(const QString& entryCommisionName, bool isBachelor,
                                                 int year) {
     m_entryCommisionName = entryCommisionName;
