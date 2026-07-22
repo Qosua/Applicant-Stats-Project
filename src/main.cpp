@@ -5,6 +5,7 @@
 #include <QQuickWindow>
 #include <QSortFilterProxyModel>
 #include <QThread>
+#include <windows.h>
 
 #include "data-processing/cache-manager.h"
 #include "models/entry-commisions-list-model.h"
@@ -38,7 +39,10 @@ void moveToThread(QThread& thread, CacheManager& cacheManager) {
 
 int main(int argc, char* argv[]) {
 
-    QApplication app(argc, argv);
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+
+    QGuiApplication app(argc, argv);
 
     SupportSystem::init();
     DataBaseManager::instance().init();
