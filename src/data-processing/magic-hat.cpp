@@ -1,4 +1,5 @@
 #include "magic-hat.h"
+#include "src/utils/database-manager.h"
 
 MagicHat::MagicHat() { m_facultyCells = std::make_shared<QList<FacultyDirection>>(); }
 
@@ -412,59 +413,32 @@ void MagicHat::printToExcel() {
     }
 }
 
-void MagicHat::setPathToKCP(const QString& path, const QString& sheet) {
+void MagicHat::setKCPFromDB(const QString& entryCommisionName, bool isBachelor, int year) {
 
-    QFile input(path);
+    QSqlQuery* result = DataBaseManager::instance().getKCP(entryCommisionName, isBachelor, year);
 
-    if (!input.exists()) {
-	qDebug() << "Не удалось найти файл " << path << "\n\t Ошибка: " << input.errorString();
-    }
+    if (!result)
+        return;
 
-    QXlsx::Document doc(path);
-    doc.selectSheet(sheet);
+    while (result->next()) {
 
-    // skipping title
-    for (int i = 2; doc.read(i, 1).isValid(); ++i) {
-
-	QString code = doc.read(i, 1).toString();
+	QString code = result->value("code").toString();
 	if (code.contains("/"))
 	    continue;
 
-	QString division = doc.read(i, 2).toString();
-	QString name = doc.read(i, 3).toString();
-	QString studyForm = doc.read(i, 4).toString();
-	QString studyType = doc.read(i, 5).toString();
-	QString kcp = doc.read(i, 6).toString();
+	QString division = result->value("department").toString();
+	QString name = result->value("profile_name").toString();
+	StudyForm studyForm = static_cast<StudyForm>(result->value("study_form").toInt());
+	StudyType studyType = static_cast<StudyType>(result->value("study_type").toInt());
+	int kcp = result->value("kcp_count").toInt();
 
 	m_facultyCells->append(FacultyDirection());
 	m_facultyCells->last().setName(name);
 	m_facultyCells->last().setDivision(division);
 	m_facultyCells->last().setCode(code);
-	m_facultyCells->last().setCapacity(kcp.toInt());
-
-	if (studyForm.toLower() == "очная" or studyForm.toLower() == "очное")
-	    m_facultyCells->last().setStudyForm(StudyForm::Personal);
-
-	if (studyForm.toLower() == "заочная" or studyForm.toLower() == "заочное")
-	    m_facultyCells->last().setStudyForm(StudyForm::NotPersonal);
-
-	if (studyForm.toLower() == "очно-заочная" or studyForm.toLower() == "очно-заочное")
-	    m_facultyCells->last().setStudyForm(StudyForm::PersonalNotPersonal);
-
-	if (studyType.toLower() == "бюджет")
-	    m_facultyCells->last().setStudyType(StudyType::Budget);
-
-	if (studyType.toLower() == "внебюджет")
-	    m_facultyCells->last().setStudyType(StudyType::NonBudget);
-
-	if (studyType.toLower() == "отдельная квота")
-	    m_facultyCells->last().setStudyType(StudyType::Kvot);
-
-	if (studyType.toLower() == "особое право")
-	    m_facultyCells->last().setStudyType(StudyType::SpecialRight);
-
-	if (studyType.toLower() == "целевое" or studyType.toLower() == "целевая")
-	    m_facultyCells->last().setStudyType(StudyType::CompanySponsor);
+	m_facultyCells->last().setCapacity(kcp);
+        m_facultyCells->last().setStudyForm(studyForm);
+        m_facultyCells->last().setStudyType(studyType);
     }
 }
 

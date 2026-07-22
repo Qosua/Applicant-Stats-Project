@@ -129,37 +129,6 @@ std::shared_ptr<QList<Applicant>> TableParserBachelor::getApplicants(
     return nullptr;
 }
 
-// bool TableParserBachelor::setColumnsNames() {
-//
-//     QFile file(m_columnsNamesFilePath);
-//
-//     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-// 	qDebug() << "Не удалось открыть файл " << m_columnsNamesFilePath
-// 	         << "\n\tОшибка: " << file.errorString();
-// 	return false;
-//     }
-//
-//     QXlsx::Document columnsNamesTable(m_columnsNamesFilePath);
-//
-//     for (int j = 2; columnsNamesTable.read(j, 2).isValid(); ++j) {
-//
-// 	for (int i = 1; m_applicantsTable->read(1, i).isValid(); ++i) {
-//
-// 	    QString columnNameInProgram = columnsNamesTable.read(j, 1).toString();
-// 	    QString columnNameInTable = columnsNamesTable.read(j, 2).toString();
-// 	    QString columnNameInApplicantsTable = m_applicantsTable->read(1, i).toString();
-//
-// 	    if (columnNameInApplicantsTable == columnNameInTable) {
-//
-// 		m_columnsNames[columnNameInProgram] = i;
-// 		break;
-// 	    }
-// 	}
-//     }
-//
-//     return true;
-// }
-
 void TableParserBachelor::printStatsToConsole() const {
 
     qDebug() << ">>=====================================================================<<";

@@ -9,7 +9,7 @@
 #include "src/applicants-faculty-data/table-parser-bachelor.h"
 
 namespace Scripts {
-void tempScript() {
+void loadDataFromXlsxToDB() {
     QXlsx::Document* doc = new QXlsx::Document(":/config/KCP.xlsx");
     TableParserBachelor parser;
 
@@ -25,7 +25,7 @@ void tempScript() {
 	if (doc->read(i, 1).toString() == "/")
 	    continue;
 
-	query.bindValue(":entry_commision_id", 0);
+	query.bindValue(":entry_commision_id", 1);
 	query.bindValue(":code", doc->read(i, 1).toString());
 	query.bindValue(":department", doc->read(i, 2).toString());
 	query.bindValue(":profile_name", doc->read(i, 3).toString());

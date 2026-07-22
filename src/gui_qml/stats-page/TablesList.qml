@@ -304,7 +304,7 @@ Rectangle {
                 iconSize: 38
 
                 onClicked: {
-                    qmlHelper.addTableFromExploler();
+                    qmlHelper.addNewTableFromExploler();
                 }
                 opacity: tablesList.dropped ? 1.0 : 0.6
 

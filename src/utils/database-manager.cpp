@@ -135,6 +135,31 @@ QList<QString> DataBaseManager::getEntryCommisionColumnsNamesListFromDb(const QS
 
     return strList;
 }
+QSqlQuery* DataBaseManager::getKCP(const QString& name, const bool& isBachelor, int year) const {
+
+    QSqlQuery* query = new QSqlQuery(m_db);
+    query->prepare(R"(
+        select *
+        from kcp
+        where entry_commision_id = (select id
+                                    from entry_commisions
+                                    where uni_name = :name and
+                                          is_bachelor = :isBachelor and
+                                          year = :year
+                                    );
+    )");
+    query->bindValue(":name", name);
+    query->bindValue(":isBachelor", isBachelor);
+    query->bindValue(":year", year);
+
+    if (!query->exec()) {
+        qCritical() << query->lastError().text();
+        return nullptr;
+    }
+
+    return query;
+
+}
 
 bool DataBaseManager::changeEntryCommissionsIndexForTable(const QString& tableName, int index) {
     if (!m_db.isOpen()) {

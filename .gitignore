@@ -5,6 +5,7 @@
 *.xls
 !/config/KCP.xlsx
 !/config/columnsNames.xlsx
+!/config/database.db
 /.qtcreator
 *.user.*
 *.user`

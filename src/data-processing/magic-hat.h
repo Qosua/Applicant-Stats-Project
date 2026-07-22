@@ -17,7 +17,7 @@ public:
     std::shared_ptr<QList<FacultyDirection>> faculties() const;
 
     void setApplicantsList(std::shared_ptr<QList<Applicant>> newApplicantsList);
-    void setPathToKCP(const QString &path, const QString &sheet);
+    void setKCPFromDB(const QString& entryCommisionName, bool isBachelor, int year);
 
     void startPriorityRoundSimulation();
     void startGeneralRoundSimulation();

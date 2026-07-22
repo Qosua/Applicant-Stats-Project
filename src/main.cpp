@@ -44,8 +44,6 @@ int main(int argc, char* argv[]) {
     DataBaseManager::instance().init();
     QQuickStyle::setStyle("Basic");
 
-    Scripts::tempScript();
-
     QThread cacheThread;
     CacheManager cacheManager;
 

@@ -56,17 +56,21 @@ std::shared_ptr<QList<FacultyDirection>> CacheManager::loadCache(const QString& 
 std::shared_ptr<QList<FacultyDirection>> CacheManager::makeCache(const QString& tableName, const QVariantList& infoList) {
     emit waitForFinish();
 
+    const QString& entryCommisionName = infoList[0].toString();
+    const bool& isBachelor = infoList[1].toBool();
+    const int& year = infoList[2].toInt();
+
     TableParserBachelor parserBachelor;
     MagicHat magicHatBachelor;
 
     parserBachelor.setTablePath(SupportSystem::appDataPath + "/" + tableName);
-    parserBachelor.setEntryCommisionInfo(infoList[0].toString(), infoList[1].toBool(), infoList[2].toInt());
+    parserBachelor.setEntryCommisionInfo(entryCommisionName, isBachelor, year);
     parserBachelor.parseTable();
 
     std::shared_ptr<QList<Applicant>> applicantsList
         = parserBachelor.getApplicants(ApplicantsFilterFlags::AdmissionsTrue, StudyType::NonBudget);
 
-    magicHatBachelor.setPathToKCP(":/config/KCP.xlsx", "Бакалавры");
+    magicHatBachelor.setKCPFromDB(entryCommisionName, isBachelor, year);
     magicHatBachelor.setApplicantsList(applicantsList);
 
     magicHatBachelor.startPriorityRoundSimulation();

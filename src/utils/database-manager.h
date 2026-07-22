@@ -2,6 +2,7 @@
 #define APPLICANTSTATSPROJECT_DATABASE_MANAGER_H
 
 #include <QList>
+#include <QHash>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -21,6 +22,8 @@ public:
     int getEntryCommissionsIndexForTable(const QString& tableName) const;
     bool isTableExist(const QString& tableName) const;
     QList<QString> getEntryCommisionColumnsNamesListFromDb(const QString& name, bool isBachelor, int year) const;
+
+    QSqlQuery* getKCP(const QString& name, const bool& isBachelor, int year) const;
 
     // Read/Write
     bool changeEntryCommissionsIndexForTable(const QString& tableName, int index);
