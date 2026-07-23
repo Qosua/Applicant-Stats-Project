@@ -18,7 +18,10 @@ Item {
 
     Connections {
         target: statsPageModel
-        function onLoadDirectionPage(index) { page.reloadStats() }
+
+        function onLoadDirectionPage(index) {
+            page.reloadStats()
+        }
     }
 
     onSourceIndexChanged: reloadStats()
@@ -174,7 +177,13 @@ Item {
 
             //applicants list
             Item {
+                id: applicantsList
                 SplitView.minimumWidth: parent.width / 4
+
+                property bool isIDHidden: false
+                property bool isFIOHidden: false
+                property bool isScoreHidden: false
+                property bool isPhoneHidden: false
 
                 //header
                 Row {
@@ -305,7 +314,8 @@ Item {
                             }
 
                             Label {
-                                text: applicantDelegate.applicantId
+                                text: (applicantsList.isIDHidden ? "..." :
+                                    applicantDelegate.applicantId)
                                 color: "#7f9cc4"
                                 font.pixelSize: 12
                                 font.family: "Consolas"
@@ -313,7 +323,8 @@ Item {
                             }
 
                             Label {
-                                text: applicantDelegate.applicantScore
+                                text: (applicantsList.isScoreidden ? "..." :
+                                    applicantDelegate.applicantScore)
                                 color: "#91cd84"
                                 font.pixelSize: 11
                                 elide: Text.ElideRight
@@ -321,7 +332,8 @@ Item {
                             }
 
                             Label {
-                                text: applicantDelegate.applicantPhone
+                                text: (applicantsList.isPhoneHidden ? "..." :
+                                    applicantDelegate.applicantPhone)
                                 color: "#9a9a9a"
                                 font.pixelSize: 12
                                 font.family: "Consolas"
@@ -329,7 +341,8 @@ Item {
                             }
 
                             Label {
-                                text: applicantDelegate.applicantName
+                                text: (applicantsList.isFIOHidden ? "..." :
+                                    applicantDelegate.applicantName)
                                 color: "#e8e8ec"
                                 font.pixelSize: 12
                                 elide: Text.ElideRight

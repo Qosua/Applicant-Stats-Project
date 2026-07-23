@@ -24,32 +24,32 @@ void TableParserBachelor::parseTable() {
     // The first line is column's names so we start from the second
     for (int i = 2; m_applicantsTable->read(i, 1).isValid(); ++i) {
 
-	applicantId = m_applicantsTable->read(i, m_columnsNames["Уникальный код"]).toInt();
+	if (getValueInTable(i, "Допущен до конкурса").toString().toLower() == "нет")
+	    continue;
+
+	applicantId = getValueInTable(i, "Уникальный код").toInt();
 
 	if (!tempHash.contains(applicantId)) {
 
 	    Applicant applicant;
 	    applicant.setId(applicantId);
-	    applicant.setFIO(m_applicantsTable->read(i, m_columnsNames["ФИО"]).toString());
-	    applicant.setEmail(m_applicantsTable->read(i, m_columnsNames["E-mail"]).toString());
-	    applicant.setPhoneNumber(
-	        m_applicantsTable->read(i, m_columnsNames["Телефон"]).toString());
+	    applicant.setFIO(getValueInTable(i, "ФИО").toString());
+	    applicant.setEmail(getValueInTable(i, "E-mail").toString());
+	    applicant.setPhoneNumber(getValueInTable(i, "Телефон").toString());
 
 	    tempHash[applicantId] = applicant;
 	}
 
 	PriorityInfo info;
-	QString priorityFullName
-	    = m_applicantsTable->read(i, m_columnsNames["Конкурсная группа"]).toString();
+	QString priorityFullName = getValueInTable(i, "Конкурсная группа").toString();
 
-	info.setEgeScore(m_applicantsTable->read(i, m_columnsNames["Сумма баллов"]).toInt());
+	info.setEgeScore(getValueInTable(i, "Сумма баллов").toInt());
 	info.setEgeAdditionalScore(
-	    m_applicantsTable->read(i, m_columnsNames["Сумма баллов за инд.дост.(конкурсные)"])
-	        .toInt());
-	info.setPriorityNumber(m_applicantsTable->read(i, m_columnsNames["Приоритет"]).toInt());
-	info.addSubject(m_applicantsTable->read(i, m_columnsNames["Предмет 1"]).toInt());
-	info.addSubject(m_applicantsTable->read(i, m_columnsNames["Предмет 2"]).toInt());
-	info.addSubject(m_applicantsTable->read(i, m_columnsNames["Предмет 3"]).toInt());
+	    getValueInTable(i, "Сумма баллов за инд.дост.(конкурсные)").toInt());
+	info.setPriorityNumber(getValueInTable(i, "Приоритет").toInt());
+	info.addSubject(getValueInTable(i, "Предмет 1").toInt());
+	info.addSubject(getValueInTable(i, "Предмет 2").toInt());
+	info.addSubject(getValueInTable(i, "Предмет 3").toInt());
 
 	info.setCode(extractCode(priorityFullName));
 	info.setName(extractName(priorityFullName));
@@ -57,19 +57,14 @@ void TableParserBachelor::parseTable() {
 	info.setStudyType(extractStudyType(priorityFullName));
 
 	info.setId(applicantId);
-	info.setAdmissionFlag((m_applicantsTable->read(i, m_columnsNames["Согласие на зачисление"])
-	                                   .toString()
-	                                   .toLower()
-	                               == "да"
-	                           ? true
-	                           : false));
-	info.setIsBVI((m_applicantsTable->read(i, m_columnsNames["Без вступительных испытаний"])
-	                           .toString()
-	                           .toLower()
-	                       == "да"
-	                   ? true
-	                   : false));
-	info.setDivision(m_applicantsTable->read(i, m_columnsNames["Имя факультета"]).toString());
+	info.setAdmissionFlag(
+	    (getValueInTable(i, "Согласие на зачисление").toString().toLower() == "да" ? true
+	                                                                               : false));
+	info.setIsBVI(
+	    (getValueInTable(i, "Без вступительных испытаний").toString().toLower() == "да"
+	         ? true
+	         : false));
+	info.setDivision(getValueInTable(i, "Имя факультета").toString());
 
 	tempHash[applicantId].addPriority(info);
     }
@@ -237,64 +232,70 @@ void TableParserBachelor::readColumnNamesFromDB() {
 	         << "\n\tОшибка: " << file.errorString();
     }
 
-    QList<QPair<QString, QString>> namesList(14);
-    int i = 0;
-    namesList[i].first = "Уникальный код";
-    namesList[i].second = columnNames[i];
+    QList<QPair<QString, QString>> namesList(15);
+    {
+	int i = 0;
+	namesList[i].first = "Уникальный код";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "Сумма баллов";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "Сумма баллов";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "Сумма баллов за инд.дост.(конкурсные)";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "Сумма баллов за инд.дост.(конкурсные)";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "Предмет 1";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "Предмет 1";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "Предмет 2";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "Предмет 2";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "Предмет 3";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "Предмет 3";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "Приоритет";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "Приоритет";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "Согласие на зачисление";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "Согласие на зачисление";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "Конкурсная группа";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "Конкурсная группа";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "Телефон";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "Телефон";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "E-mail";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "E-mail";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "ФИО";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "ФИО";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "Без вступительных испытаний";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "Без вступительных испытаний";
+	namesList[i].second = columnNames[i];
 
-    i += 1;
-    namesList[i].first = "Имя факультета";
-    namesList[i].second = columnNames[i];
+	i += 1;
+	namesList[i].first = "Имя факультета";
+	namesList[i].second = columnNames[i];
 
-    QXlsx::Document columnsNamesTable(m_columnsNamesFilePath);
+	i += 1;
+	namesList[i].first = "Допущен до конкурса";
+	namesList[i].second = columnNames[i];
+    }
+
+    for (const auto& pair : namesList) m_columnsNames[pair.first] = -1;
 
     for (auto const pair : namesList) {
 
@@ -317,6 +318,12 @@ void TableParserBachelor::setEntryCommisionInfo(const QString& entryCommisionNam
     m_entryCommisionName = entryCommisionName;
     m_isBachelor = isBachelor;
     m_year = year;
+}
+
+QVariant TableParserBachelor::getValueInTable(const int rowIndex, const QString& columnName) const {
+    return (m_columnsNames[columnName] != -1
+                ? m_applicantsTable->read(rowIndex, m_columnsNames[columnName])
+                : QVariant());
 }
 
 QString TableParserBachelor::extractCode(const QString& str) { return str.mid(0, 8); }

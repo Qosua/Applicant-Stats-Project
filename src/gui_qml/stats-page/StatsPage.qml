@@ -9,11 +9,9 @@ SplitView {
     function getFileName(mode) {
         if (mode === "faculty") {
             return "FacultyStatsPage.qml"
-        }
-        else if (mode === "direction") {
+        } else if (mode === "direction") {
             return "DirectionStatsPage.qml"
-        }
-        else {
+        } else {
             return "EmptyStatsPlaceholder.qml"
         }
     }
@@ -101,6 +99,7 @@ SplitView {
     }
 
     Rectangle {
+
         SplitView.preferredWidth: parent.width / (3 / 4)
         SplitView.minimumWidth: parent.width / 10
         color: "#191a1c"
@@ -109,9 +108,24 @@ SplitView {
         bottomRightRadius: 10
         clip: true
 
+        Rectangle {
+            id: searchBar
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.margins: 5
+
+            height: 40
+            color: "red"
+
+        }
+
         Loader {
             id: detailLoader
-            anchors.fill: parent
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            anchors.top: searchBar.bottom
             anchors.margins: 1
 
             property string mode: "none"
@@ -119,19 +133,22 @@ SplitView {
 
             source: getFileName(mode)
 
-            onLoaded:         if (item) item.payload = payload
+            onLoaded: if (item) item.payload = payload
             onPayloadChanged: if (item) item.payload = payload
 
             Connections {
                 target: statsPageModel
+
                 function onLoadDirectionPage(index) {
                     detailLoader.mode = "direction"
-                    detailLoader.payload = { sourceIndex: index }
+                    detailLoader.payload = {sourceIndex: index}
                 }
+
                 function onLoadFacultyPage(name) {
                     detailLoader.mode = "faculty"
-                    detailLoader.payload = { facultyName: name }
+                    detailLoader.payload = {facultyName: name}
                 }
+
                 function onNothingToLoad() {
                     detailLoader.mode = "none"
                     detailLoader.payload = null
@@ -139,5 +156,4 @@ SplitView {
             }
         }
     }
-
 }

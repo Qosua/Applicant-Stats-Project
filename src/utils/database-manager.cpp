@@ -97,7 +97,7 @@ QList<QString> DataBaseManager::getEntryCommisionColumnsNamesListFromDb(const QS
 
     QSqlQuery query(m_db);
     query.prepare(R"(
-        select unique_code, score, achivments_score, subject_one, subject_two, subject_three, priority_number, consent, competition_group, phone_number, email, FIO, BVI, faculty_name
+        select unique_code, score, achivments_score, subject_one, subject_two, subject_three, priority_number, consent, competition_group, phone_number, email, FIO, BVI, faculty_name, isAttended
         from columns_mapping
         where entry_commision_id = (select id
         from entry_commisions
@@ -131,6 +131,7 @@ QList<QString> DataBaseManager::getEntryCommisionColumnsNamesListFromDb(const QS
 	strList.append(query.value(11).toString());
 	strList.append(query.value(12).toString());
 	strList.append(query.value(13).toString());
+	strList.append(query.value(14).toString());
     }
 
     return strList;
@@ -153,12 +154,11 @@ QSqlQuery* DataBaseManager::getKCP(const QString& name, const bool& isBachelor, 
     query->bindValue(":year", year);
 
     if (!query->exec()) {
-        qCritical() << query->lastError().text();
-        return nullptr;
+	qCritical() << query->lastError().text();
+	return nullptr;
     }
 
     return query;
-
 }
 
 bool DataBaseManager::changeEntryCommissionsIndexForTable(const QString& tableName, int index) {
@@ -233,6 +233,7 @@ bool DataBaseManager::createDatabase() {
             "FIO" TEXT,
             "BVI" TEXT NOT NULL,
             "faculty_name" TEXT NOT NULL,
+            "isAttended" TEXT NOT NULL,
             PRIMARY KEY("id"),
             FOREIGN KEY ("entry_commision_id") REFERENCES "entry_commisions"("id")
             ON UPDATE CASCADE ON DELETE CASCADE

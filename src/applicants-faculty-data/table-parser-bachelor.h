@@ -25,6 +25,7 @@ public:
     void printStatsToConsole() const;
     void readColumnNamesFromDB();
     void setEntryCommisionInfo(const QString& entryCommisionName, bool isBachelor, int year);
+    QVariant getValueInTable(const int rowIndex, const QString& columnName) const;
 
     QString extractCode(const QString& str);
     QString extractName(const QString& str);

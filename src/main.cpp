@@ -1,3 +1,5 @@
+#include <windows.h>
+
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -5,7 +7,6 @@
 #include <QQuickWindow>
 #include <QSortFilterProxyModel>
 #include <QThread>
-#include <windows.h>
 
 #include "data-processing/cache-manager.h"
 #include "models/entry-commisions-list-model.h"
@@ -42,7 +43,7 @@ int main(int argc, char* argv[]) {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     SupportSystem::init();
     DataBaseManager::instance().init();
@@ -58,7 +59,7 @@ int main(int argc, char* argv[]) {
     StatsPageModel statsPageModel;
     EntryCommisionsListModel entryModel;
 
-    qmlHelper.setAppVersion("0.9.0");
+    qmlHelper.setAppVersion("1.0.0");
 
     connectSignals(qmlHelper, cacheManager, treeViewModel, statsPageModel);
     moveToThread(cacheThread, cacheManager);
