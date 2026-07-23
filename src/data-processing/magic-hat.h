@@ -17,16 +17,11 @@ public:
     std::shared_ptr<QList<FacultyDirection>> faculties() const;
 
     void setApplicantsList(std::shared_ptr<QList<Applicant>> newApplicantsList);
-    void setKCPFromDB(const QString& entryCommisionName, bool isBachelor, int year);
+    void setKCPFromDB(const QString& entryCommisionName, bool isBachelor, int year) const;
 
     void startPriorityRoundSimulation();
     void startGeneralRoundSimulation();
     void rebalanceBudgetaryPlaces();
-
-    void printFaculties();
-    void printUncountedApplicants();
-    void printStatsToConsole();
-    void printToExcel();
 
 private:
     std::shared_ptr<QList<Applicant>> m_applicantsListCopy;
