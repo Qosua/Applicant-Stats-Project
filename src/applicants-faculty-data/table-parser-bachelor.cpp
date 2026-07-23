@@ -21,50 +21,126 @@ void TableParserBachelor::parseTable() {
     QHash<int, Applicant> tempHash;
     int applicantId = 0;
 
-    // The first line is column's names so we start from the second
     for (int i = 2; m_applicantsTable->read(i, 1).isValid(); ++i) {
 
-	if (getValueInTable(i, "Допущен до конкурса").toString().toLower() == "нет")
+	if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Допущен до конкурса");
+	    res.has_value() and res.value().toString().toLower() == "нет")
 	    continue;
 
-	applicantId = getValueInTable(i, "Уникальный код").toInt();
+	if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Уникальный код");
+	    res.has_value())
+	    applicantId = res.value().toInt();
+        else {
+            qCritical() << __FUNCTION__ << "READING ID ISSUE" << "row index: " << i;
+            continue;
+        }
 
 	if (!tempHash.contains(applicantId)) {
 
 	    Applicant applicant;
 	    applicant.setId(applicantId);
-	    applicant.setFIO(getValueInTable(i, "ФИО").toString());
-	    applicant.setEmail(getValueInTable(i, "E-mail").toString());
-	    applicant.setPhoneNumber(getValueInTable(i, "Телефон").toString());
+
+	    if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "ФИО");
+                res.has_value())
+	        applicant.setFIO(res.value().toString());
+
+	    if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "E-mail");
+                res.has_value())
+	        applicant.setEmail(res.value().toString());
+
+	    if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Телефон");
+                res.has_value())
+	        applicant.setPhoneNumber(res.value().toString());
+
 
 	    tempHash[applicantId] = applicant;
 	}
 
 	PriorityInfo info;
-	QString priorityFullName = getValueInTable(i, "Конкурсная группа").toString();
 
-	info.setEgeScore(getValueInTable(i, "Сумма баллов").toInt());
-	info.setEgeAdditionalScore(
-	    getValueInTable(i, "Сумма баллов за инд.дост.(конкурсные)").toInt());
-	info.setPriorityNumber(getValueInTable(i, "Приоритет").toInt());
-	info.addSubject(getValueInTable(i, "Предмет 1").toInt());
-	info.addSubject(getValueInTable(i, "Предмет 2").toInt());
-	info.addSubject(getValueInTable(i, "Предмет 3").toInt());
+        if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Сумма баллов");
+            res.has_value())
+            info.setEgeScore(res.value().toInt());
+        else {
+            qCritical() << __FUNCTION__ << "READING PRIORITY ISSUE" << "row index: " << i;
+            continue;
+        }
+
+        if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Сумма баллов за инд.дост.(конкурсные)");
+            res.has_value())
+            info.setEgeAdditionalScore(res.value().toInt());
+        else {
+            qCritical() << __FUNCTION__ << "READING PRIORITY ISSUE" << "row index: " << i;
+            continue;
+        }
+
+        if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Приоритет");
+            res.has_value())
+            info.setPriorityNumber(res.value().toInt());
+        else {
+            qCritical() << __FUNCTION__ << "READING PRIORITY ISSUE" << "row index: " << i;
+            continue;
+        }
+
+        if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Предмет 1");
+            res.has_value())
+            info.addSubject(res.value().toInt());
+        else {
+            info.addSubject(0);
+        }
+
+        if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Предмет 2");
+            res.has_value())
+            info.addSubject(res.value().toInt());
+        else {
+            info.addSubject(0);
+        }
+
+        if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Предмет 3");
+            res.has_value())
+            info.addSubject(res.value().toInt());
+        else {
+            info.addSubject(0);
+        }
+
+        QString priorityFullName;
+        if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Конкурсная группа");
+            res.has_value())
+            priorityFullName = res.value().toString();
+        else {
+            qCritical() << __FUNCTION__ << "READING PRIORITY ISSUE" << "row index: " << i;
+            continue;
+        }
 
 	info.setCode(extractCode(priorityFullName));
 	info.setName(extractName(priorityFullName));
 	info.setStudyForm(extractStudyForm(priorityFullName));
 	info.setStudyType(extractStudyType(priorityFullName));
-
 	info.setId(applicantId);
-	info.setAdmissionFlag(
-	    (getValueInTable(i, "Согласие на зачисление").toString().toLower() == "да" ? true
-	                                                                               : false));
-	info.setIsBVI(
-	    (getValueInTable(i, "Без вступительных испытаний").toString().toLower() == "да"
-	         ? true
-	         : false));
-	info.setDivision(getValueInTable(i, "Имя факультета").toString());
+
+        if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Согласие на зачисление");
+            res.has_value())
+            info.setAdmissionFlag((res.value().toString().toLower() == "да" ? true : false));
+        else {
+            qCritical() << __FUNCTION__ << "READING PRIORITY ISSUE" << "row index: " << i;
+            continue;
+        }
+
+        if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Без вступительных испытаний");
+            res.has_value())
+            info.setIsBVI((res.value().toString().toLower() == "да" ? true : false));
+        else {
+            qCritical() << __FUNCTION__ << "READING PRIORITY ISSUE" << "row index: " << i;
+            continue;
+        }
+
+        if (std::expected<QVariant, TableParserError> res = getValueInTable(i, "Имя факультета");
+            res.has_value())
+            info.setDivision(res.value().toString());
+        else {
+            qCritical() << __FUNCTION__ << "READING PRIORITY ISSUE" << "row index: " << i;
+            continue;
+        }
 
 	tempHash[applicantId].addPriority(info);
     }
@@ -124,99 +200,6 @@ std::shared_ptr<QList<Applicant>> TableParserBachelor::getApplicants(
     return nullptr;
 }
 
-void TableParserBachelor::printStatsToConsole() const {
-
-    qDebug() << ">>=====================================================================<<";
-
-    int counter = 0;
-    for (auto& elem : *m_applicantsList)
-	for (const auto& priority : elem.priorities())
-	    if (priority.studyType() == StudyType::NonBudget) {
-		counter += 1;
-		break;
-	    }
-    qDebug() << " applicants count with at least one nonbudget priority -" << counter;
-
-    counter = 0;
-    for (auto& elem : *m_applicantsList)
-	for (const auto& priority : elem.priorities())
-	    if (priority.studyType() == StudyType::Budget) {
-		counter += 1;
-		break;
-	    }
-    qDebug() << " applicants count with at least one budget priority -" << counter;
-
-    counter = 0;
-    for (auto& elem : *m_applicantsList)
-	for (const auto& priority : elem.priorities())
-	    if (priority.studyType() == StudyType::CompanySponsor) {
-		counter += 1;
-		break;
-	    }
-    qDebug() << " applicants count with at least one goal priority -" << counter;
-
-    counter = 0;
-    for (auto& elem : *m_applicantsList)
-	for (const auto& priority : elem.priorities())
-	    if (priority.studyType() == StudyType::Kvot) {
-		counter += 1;
-		break;
-	    }
-    qDebug() << " applicants count with at least one kvot priority -" << counter;
-
-    counter = 0;
-    for (auto& elem : *m_applicantsList)
-	for (const auto& priority : elem.priorities())
-	    if (priority.studyType() == StudyType::SpecialRight) {
-		counter += 1;
-		break;
-	    }
-    qDebug() << " applicants count with at least one special right -" << counter;
-    qDebug() << ">-----------------------------------------------------------------------<";
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    counter = 0;
-    for (auto& elem : *m_applicantsList)
-	for (const auto& priority : elem.priorities())
-	    if (priority.studyType() == StudyType::NonBudget) {
-		counter += 1;
-	    }
-    qDebug() << " nonbudget priority count -" << counter;
-
-    counter = 0;
-    for (auto& elem : *m_applicantsList)
-	for (const auto& priority : elem.priorities())
-	    if (priority.studyType() == StudyType::Budget) {
-		counter += 1;
-	    }
-    qDebug() << " bidget priority count -" << counter;
-
-    counter = 0;
-    for (auto& elem : *m_applicantsList)
-	for (const auto& priority : elem.priorities())
-	    if (priority.studyType() == StudyType::CompanySponsor) {
-		counter += 1;
-	    }
-    qDebug() << " goal priority count -" << counter;
-
-    counter = 0;
-    for (auto& elem : *m_applicantsList)
-	for (const auto& priority : elem.priorities())
-	    if (priority.studyType() == StudyType::Kvot) {
-		counter += 1;
-	    }
-    qDebug() << " kvot priority count -" << counter;
-
-    counter = 0;
-    for (auto& elem : *m_applicantsList)
-	for (const auto& priority : elem.priorities())
-	    if (priority.studyType() == StudyType::SpecialRight) {
-		counter += 1;
-	    }
-    qDebug() << " special right priority count -" << counter;
-    qDebug() << ">>=====================================================================<<\n";
-}
-
 void TableParserBachelor::readColumnNamesFromDB() {
 
     QList<QString> columnNames
@@ -224,13 +207,6 @@ void TableParserBachelor::readColumnNamesFromDB() {
                                                                               m_isBachelor, m_year);
 
     m_columnsNames.clear();
-
-    QFile file(m_columnsNamesFilePath);
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-	qDebug() << "Не удалось открыть файл " << m_columnsNamesFilePath
-	         << "\n\tОшибка: " << file.errorString();
-    }
 
     QList<QPair<QString, QString>> namesList(15);
     {
@@ -295,7 +271,8 @@ void TableParserBachelor::readColumnNamesFromDB() {
 	namesList[i].second = columnNames[i];
     }
 
-    for (const auto& pair : namesList) m_columnsNames[pair.first] = -1;
+    for (const auto& pair : namesList)
+        m_columnsNames[pair.first] = -1;
 
     for (auto const pair : namesList) {
 
@@ -315,26 +292,57 @@ void TableParserBachelor::readColumnNamesFromDB() {
 
 void TableParserBachelor::setEntryCommisionInfo(const QString& entryCommisionName, bool isBachelor,
                                                 int year) {
+    if (entryCommisionName.isEmpty()) {
+        qCritical() << Q_FUNC_INFO << ": entryCommisionName is empty";
+        return;
+    }
+
     m_entryCommisionName = entryCommisionName;
     m_isBachelor = isBachelor;
     m_year = year;
 }
 
-QVariant TableParserBachelor::getValueInTable(const int rowIndex, const QString& columnName) const {
-    return (m_columnsNames[columnName] != -1
-                ? m_applicantsTable->read(rowIndex, m_columnsNames[columnName])
-                : QVariant());
+std::expected<QVariant, TableParserError> TableParserBachelor::getValueInTable(const int rowIndex, const QString& columnName) const {
+
+    if (m_columnsNames[columnName] == -1)
+        return std::unexpected<TableParserError>(TableParserError::noSuchColumn);
+
+    auto value = m_applicantsTable->read(rowIndex, m_columnsNames[columnName]);
+    if (value.isValid() and !value.isNull())
+        return value;
+
+    return std::unexpected<TableParserError>(TableParserError::valueError);
 }
 
-QString TableParserBachelor::extractCode(const QString& str) { return str.mid(0, 8); }
+QString TableParserBachelor::extractCode(const QString& str) {
+
+    if (str.isEmpty() or str.size() < 8) {
+        qCritical() << "CODE EXTRACTION ERROR";
+        return "CODE ERROR";
+    }
+
+    return str.mid(0, 8);
+}
 
 QString TableParserBachelor::extractName(const QString& str) {
 
+    if (str.isEmpty()) {
+        qCritical() << "NAME EXTRACTION ERROR";
+        return "NAME ERROR";
+    }
+
     QString name;
 
-    for (int i = 9; (str.mid(i + 2, 4).toLower() != "заоч" and str.mid(i + 2, 4).toLower() != "очно"
-                     and str.mid(i + 2, 4).toLower() != "очна");
+    for (int i = 9;
+        (str.mid(i + 2, 4).toLower() != "заоч" and
+         str.mid(i + 2, 4).toLower() != "очно" and
+         str.mid(i + 2, 4).toLower() != "очна");
          ++i) {
+
+        if (i >= str.size()) {
+            qCritical() << "NAME EXTRACTION ERROR";
+            return "NAME ERROR";
+        }
 
 	if (str[i - 1] == str[i] and str[i] == " ")
 	    continue;
@@ -346,6 +354,11 @@ QString TableParserBachelor::extractName(const QString& str) {
 }
 
 StudyForm TableParserBachelor::extractStudyForm(const QString& str) {
+
+    if (str.isEmpty() or str.size() < 5) {
+        qCritical() << "STUDY FORM EXTRACTION ERROR";
+        return StudyForm::Error;
+    }
 
     if (str.contains("Очное") or str.contains("Очная")) {
 	return StudyForm::Personal;
@@ -360,6 +373,11 @@ StudyForm TableParserBachelor::extractStudyForm(const QString& str) {
 }
 
 StudyType TableParserBachelor::extractStudyType(const QString& str) {
+
+    if (str.isEmpty() or str.size() < 6) {
+        qCritical() << "STUDY TYPE EXTRACTION ERROR";
+        return StudyType::Error;
+    }
 
     if (str.contains("Бюджет")) {
 	return StudyType::Budget;

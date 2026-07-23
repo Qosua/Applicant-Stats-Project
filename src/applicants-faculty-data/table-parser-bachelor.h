@@ -8,24 +8,29 @@
 #include <QMap>
 #include <QTextStream>
 #include <memory>
+#include <expected>
 
 #include "../xlsx.h"
 #include "applicant.h"
 #include "namespaces.h"
 
+enum class TableParserError {
+    noError,
+    valueError,
+    noSuchColumn,
+};
+
 class TableParserBachelor {
 
 public:
     void setTablePath(const QString& path);
-
     void parseTable();
     std::shared_ptr<QList<Applicant>> getApplicants(ApplicantsFilterFlags flag,
                                                     StudyType priorityToDelete) const;
 
-    void printStatsToConsole() const;
     void readColumnNamesFromDB();
     void setEntryCommisionInfo(const QString& entryCommisionName, bool isBachelor, int year);
-    QVariant getValueInTable(const int rowIndex, const QString& columnName) const;
+    std::expected<QVariant, TableParserError> getValueInTable(const int rowIndex, const QString& columnName) const;
 
     QString extractCode(const QString& str);
     QString extractName(const QString& str);

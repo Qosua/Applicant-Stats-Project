@@ -16,7 +16,7 @@ bool DataBaseManager::init() {
     m_db.setDatabaseName(SupportSystem::appDbPath);
 
     if (!m_db.open()) {
-	qCritical() << "Database error";
+	qCritical() << "SQL ERROR"  << "Database error";
 	return false;
     }
 
@@ -29,13 +29,13 @@ QSqlDatabase& DataBaseManager::db() { return m_db; }
 QList<QVariantList> DataBaseManager::getEntryCommisionsList() const {
 
     if (!m_db.isOpen())
-	qCritical() << "DatabaseManager could not open connection to database";
+	qCritical() << "SQL ERROR"  << "DatabaseManager could not open connection to database";
 
     QSqlQuery query(m_db);
     const QString strQuery = R"(SELECT uni_name, year, is_bachelor FROM entry_commisions;)";
 
     if (!query.exec(strQuery)) {
-	qCritical() << query.lastError().text();
+	qCritical() << "SQL ERROR"  << query.lastError().text();
 	return {};
     }
 
@@ -51,20 +51,20 @@ QList<QVariantList> DataBaseManager::getEntryCommisionsList() const {
 int DataBaseManager::getEntryCommissionsIndexForTable(const QString& tableName) const {
 
     if (!m_db.isOpen()) {
-	qCritical() << "DatabaseManager could not open connection to database";
+	qCritical() << "SQL ERROR"  << "DatabaseManager could not open connection to database";
 	return -1;
     }
 
     QSqlQuery query(m_db);
     if (!query.prepare(
             R"(SELECT entry_commision_id FROM current_table_presets WHERE tableName = :tName)")) {
-	qCritical() << query.lastError().text();
+	qCritical() << "SQL ERROR"  << query.lastError().text();
 	return -1;
     }
     query.bindValue(":tName", tableName);
 
     if (!query.exec()) {
-	qCritical() << query.lastError().text();
+	qCritical() << "SQL ERROR"  << query.lastError().text();
 	return -1;
     }
 
@@ -82,7 +82,7 @@ bool DataBaseManager::isTableExist(const QString& tableName) const {
     query.bindValue(":tableName", tableName);
 
     if (!query.exec()) {
-	qCritical() << query.lastError().text();
+	qCritical() << "SQL ERROR"  << query.lastError().text();
 	return false;
     }
 
@@ -111,7 +111,7 @@ QList<QString> DataBaseManager::getEntryCommisionColumnsNamesListFromDb(const QS
     query.bindValue(":year", year);
 
     if (!query.exec()) {
-	qCritical() << query.lastError().text();
+	qCritical() << "SQL ERROR" << query.lastError().text();
 	return {};
     }
 
@@ -154,7 +154,7 @@ QSqlQuery* DataBaseManager::getKCP(const QString& name, const bool& isBachelor, 
     query->bindValue(":year", year);
 
     if (!query->exec()) {
-	qCritical() << query->lastError().text();
+	qCritical() << "SQL ERROR"  << query->lastError().text();
 	return nullptr;
     }
 
@@ -163,7 +163,7 @@ QSqlQuery* DataBaseManager::getKCP(const QString& name, const bool& isBachelor, 
 
 bool DataBaseManager::changeEntryCommissionsIndexForTable(const QString& tableName, int index) {
     if (!m_db.isOpen()) {
-	qCritical() << "DatabaseManager could not open connection to database";
+	qCritical() << "SQL ERROR" << "DatabaseManager could not open connection to database";
 	return false;
     }
 
@@ -173,14 +173,14 @@ bool DataBaseManager::changeEntryCommissionsIndexForTable(const QString& tableNa
             SET entry_commision_id = :newID
             WHERE tableName = :tName )")) {
 
-	qCritical() << query.lastError().text();
+	qCritical() << "SQL ERROR"  << query.lastError().text();
 	return false;
     }
     query.bindValue(":tName", tableName);
     query.bindValue(":newID", index);
 
     if (!query.exec()) {
-	qCritical() << query.lastError().text();
+	qCritical() << "SQL ERROR"  << query.lastError().text();
 	return false;
     }
 
@@ -206,7 +206,7 @@ void DataBaseManager::addNewTablePreset(const QString& tableName, int commisionI
     query.bindValue(":entry_commision_id", commisionIndex);
 
     if (!query.exec()) {
-	qCritical() << query.lastError().text();
+	qCritical() << "SQL ERROR" << query.lastError().text();
 	return;
     }
 }
@@ -287,6 +287,8 @@ bool DataBaseManager::createDatabase() {
         and query.exec(strQuery4) and query.exec(strQuery5) and query.exec(strQuery6)) {
 	return true;
     }
+
+    qCritical()  << "SQL ERROR - DATABASE CREATION FAILED";
 
     return false;
 }

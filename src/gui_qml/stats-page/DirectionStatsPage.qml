@@ -162,7 +162,7 @@ Item {
             spacing: 4
 
             Layout.fillWidth: true
-            Layout.preferredHeight: (parent.height / 2) + 120
+            Layout.preferredHeight: (parent.height / 2) + 80
 
             //score graph
             ScoreDist {
