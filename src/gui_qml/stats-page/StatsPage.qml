@@ -115,7 +115,9 @@ SplitView {
             anchors.top: parent.top
             anchors.margins: 5
 
-            height: 40
+            visible: false
+
+            height: visible ? 40 : 0
             color: "red"
 
         }

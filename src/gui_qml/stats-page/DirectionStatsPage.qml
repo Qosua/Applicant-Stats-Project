@@ -10,6 +10,41 @@ Item {
     property int sourceIndex: payload ? (payload.sourceIndex ?? -1) : -1
     property var stats: null
 
+    component CustomCheckBox: Rectangle
+    {
+        id: checkBox
+        property bool isToggled: false
+        width: childrenRect.width
+        height: childrenRect.height
+        color: "transparent"
+        Row {
+            spacing: 3
+            // Checkbox icons
+            Text {
+                id: innerText
+                font.family: "Lato"
+                color: "#797979"
+                font.pixelSize: 17
+                text: checkBox.isToggled ? "\uf046" : "\uf096"
+                width: 16
+            }
+            // Checkbox text
+            Text {
+                anchors.verticalCenter: innerText.verticalCenter
+                color: "#bbbbbb"
+                font.family: "Lato"
+                text: isToggled ? "Скрыто" : "Скрыть"
+                font.pixelSize: 13
+            }
+        }
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                checkBox.isToggled = !checkBox.isToggled
+            }
+        }
+    }
+
     function reloadStats() {
         stats = (sourceIndex >= 0)
             ? statsPageModel.directionStatsAt(sourceIndex)
@@ -167,7 +202,7 @@ Item {
             //score graph
             ScoreDist {
                 SplitView.preferredHeight: parent.height
-                SplitView.preferredWidth: parent.width / 2
+                SplitView.preferredWidth: parent.width / 2.3
                 SplitView.minimumWidth: parent.width / 2.4
 
                 distribution: stats ? stats.scoreDistribution : []
@@ -189,7 +224,7 @@ Item {
                 Row {
                     id: listHeader
                     width: parent.width
-                    height: 24
+                    height: 45
                     anchors.top: parent.top
                     anchors.leftMargin: 20
                     spacing: 6
@@ -202,31 +237,64 @@ Item {
                         font.pixelSize: 15
                         font.family: "Consolas"
                     }
-                    Label {
-                        width: 70
-                        text: "ID"
-                        color: "#557799"
-                        font.pixelSize: 15
-                        font.family: "Consolas"
+                    ColumnLayout {
+                        width: 77
+                        spacing: 2
+                        Label {
+                            text: "ID"
+                            color: "#557799"
+                            font.pixelSize: 15
+                            font.family: "Consolas"
+                        }
+                        CustomCheckBox {
+                            onIsToggledChanged: {
+                                applicantsList.isIDHidden = !applicantsList.isIDHidden;
+                            }
+                        }
                     }
-                    Label {
-                        width: 70
-                        text: "Баллы"
-                        color: "#6a9960"
-                        font.pixelSize: 15
+                    ColumnLayout {
+                        width: 77
+                        spacing: 2
+                        Label {
+                            text: "Баллы"
+                            color: "#6a9960"
+                            font.pixelSize: 15
+                            font.family: "Consolas"
+                        }
+                        CustomCheckBox {
+                            onIsToggledChanged: {
+                                applicantsList.isScoreHidden = !applicantsList.isScoreHidden;
+                            }
+                        }
                     }
-                    Label {
+                    ColumnLayout {
                         width: 140
-                        text: "Телефон"
-                        color: "#6a6a6a"
-                        font.pixelSize: 15
-                        font.family: "Consolas"
+                        spacing: 2
+                        Label {
+                            text: "Телефон"
+                            color: "#6a6a6a"
+                            font.pixelSize: 15
+                            font.family: "Consolas"
+                        }
+                        CustomCheckBox {
+                            onIsToggledChanged: {
+                                applicantsList.isPhoneHidden = !applicantsList.isPhoneHidden;
+                            }
+                        }
                     }
-                    Label {
-                        text: "ФИО"
-                        font.pixelSize: 15
-                        color: "#9a9aa0"
-                        font.family: "Consolas"
+                    ColumnLayout {
+                        spacing: 2
+                        Label {
+                            text: "ФИО"
+                            font.pixelSize: 15
+                            color: "#9a9aa0"
+                            font.family: "Consolas"
+                        }
+                        CustomCheckBox {
+                            onIsToggledChanged: {
+                                applicantsList.isFIOHidden = !applicantsList.isFIOHidden;
+                            }
+                        }
                     }
                 }
 
@@ -307,7 +375,7 @@ Item {
                             Label {
                                 text: applicantDelegate.index + 1
                                 color: "#777777"
-                                font.pixelSize: 11
+                                font.pixelSize: 12
                                 font.family: "Consolas"
                                 horizontalAlignment: Text.AlignLeft
                                 Layout.preferredWidth: 25
@@ -319,16 +387,17 @@ Item {
                                 color: "#7f9cc4"
                                 font.pixelSize: 12
                                 font.family: "Consolas"
-                                Layout.preferredWidth: 70
+                                Layout.preferredWidth: 77
                             }
 
                             Label {
-                                text: (applicantsList.isScoreidden ? "..." :
+                                text: (applicantsList.isScoreHidden ? "..." :
                                     applicantDelegate.applicantScore)
                                 color: "#91cd84"
-                                font.pixelSize: 11
+                                font.pixelSize: 12
+                                font.family: "Consolas"
                                 elide: Text.ElideRight
-                                Layout.preferredWidth: 70
+                                Layout.preferredWidth: 77
                             }
 
                             Label {
@@ -345,6 +414,7 @@ Item {
                                     applicantDelegate.applicantName)
                                 color: "#e8e8ec"
                                 font.pixelSize: 12
+                                font.family: "Consolas"
                                 elide: Text.ElideRight
                                 Layout.fillWidth: true
                                 Layout.preferredWidth: 1
