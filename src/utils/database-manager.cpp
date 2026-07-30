@@ -4,7 +4,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 
-#include "support-system.h"
+#include "app-paths-manager.h"
 
 DataBaseManager& DataBaseManager::instance() {
     static DataBaseManager inst;
@@ -13,7 +13,7 @@ DataBaseManager& DataBaseManager::instance() {
 
 bool DataBaseManager::init() {
     m_db = QSqlDatabase::addDatabase("QSQLITE");
-    m_db.setDatabaseName(SupportSystem::appDbPath);
+    m_db.setDatabaseName(AppPathsManager::appDbPath);
 
     if (!m_db.open()) {
 	qCritical() << "SQL ERROR"  << "Database error";

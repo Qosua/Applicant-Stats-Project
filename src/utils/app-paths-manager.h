@@ -1,12 +1,12 @@
-#ifndef SUPPORTSYSTEM_H
-#define SUPPORTSYSTEM_H
+#ifndef APPLICANTSTATSPROJECT_APPPATHSMANAGER_H
+#define APPLICANTSTATSPROJECT_APPPATHSMANAGER_H
 
 #include <QString>
 
-class SupportSystem {
+class AppPathsManager {
 
 public:
-    SupportSystem();
+    AppPathsManager();
 
     static void init();
 
@@ -21,4 +21,4 @@ public:
     static const QString downloadPath;
 };
 
-#endif  // SUPPORTSYSTEM_H
+#endif  // APPLICANTSTATSPROJECT_APPPATHSMANAGER_H

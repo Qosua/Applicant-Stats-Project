@@ -28,16 +28,16 @@ find_package(Qt6 COMPONENTS
         REQUIRED)
 
 add_executable(ApplicantStatsProject
-        src/xlsx.h
 
         src/data-processing/cache-manager.h
         src/data-processing/magic-hat.h
 
-        src/utils/support-system.h
+        src/utils/app-paths-manager.h
         src/utils/qml-helper.h
         src/utils/database-manager.h
         src/utils/scripts.h
-        src/utils/window-manager.h
+
+        src/qml-modules/window-manager.h
 
         src/applicants-faculty-data/table-parser-bachelor.h
         src/applicants-faculty-data/namespaces.h
@@ -56,10 +56,11 @@ add_executable(ApplicantStatsProject
         src/data-processing/cache-manager.cpp
         src/data-processing/magic-hat.cpp
 
-        src/utils/support-system.cpp
+        src/utils/app-paths-manager.cpp
         src/utils/qml-helper.cpp
         src/utils/database-manager.cpp
-        src/utils/window-manager.cpp
+
+        src/qml-modules/window-manager.cpp
 
         src/applicants-faculty-data/table-parser-bachelor.cpp
         src/applicants-faculty-data/faculty-direction.cpp
@@ -82,24 +83,24 @@ qt_add_qml_module(ApplicantStatsProject
         NO_PLUGIN
         QML_FILES
 
-        src/gui_qml/Main.qml
-        src/gui_qml/visual-effects/LeftTopGradient.qml
-        src/gui_qml/PagesMenu.qml
-        src/gui_qml/StatusBar.qml
+        src/qml-gui/Main.qml
+        src/qml-gui/visual-effects/LeftTopGradient.qml
+        src/qml-gui/PagesMenu.qml
+        src/qml-gui/StatusBar.qml
 
-        src/gui_qml/stats-page/StatsPage.qml
-        src/gui_qml/stats-page/TablesList.qml
-        src/gui_qml/stats-page/FacultyTreeView.qml
-        src/gui_qml/stats-page/FacultyStatsPage.qml
-        src/gui_qml/stats-page/DirectionStatsPage.qml
-        src/gui_qml/stats-page/EmptyStatsPlaceholder.qml
-        src/gui_qml/stats-page/PageErrorPlaceholder.qml
+        src/qml-gui/stats-page/StatsPage.qml
+        src/qml-gui/stats-page/TablesList.qml
+        src/qml-gui/stats-page/FacultyTreeView.qml
+        src/qml-gui/stats-page/FacultyStatsPage.qml
+        src/qml-gui/stats-page/DirectionStatsPage.qml
+        src/qml-gui/stats-page/EmptyStatsPlaceholder.qml
+        src/qml-gui/stats-page/PageErrorPlaceholder.qml
 
-        src/gui_qml/components/PageButton.qml
-        src/gui_qml/components/ScoreDist.qml
-        src/gui_qml/components/CustomComboBox.qml
+        src/qml-gui/components/PageButton.qml
+        src/qml-gui/components/ScoreDist.qml
+        src/qml-gui/components/CustomComboBox.qml
 
-        src/gui_qml/windows/NewTableSetter.qml
+        src/qml-gui/windows/NewTableSetter.qml
 )
 
 target_link_libraries(ApplicantStatsProject PRIVATE

@@ -9,7 +9,7 @@
 
 #include "../applicants-faculty-data/faculty-direction.h"
 #include "../applicants-faculty-data/table-parser-bachelor.h"
-#include "../utils/support-system.h"
+#include "../utils/app-paths-manager.h"
 #include "magic-hat.h"
 
 class CacheManager : public QObject {

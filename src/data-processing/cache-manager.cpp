@@ -9,7 +9,7 @@ void CacheManager::processTableHandle(const QString& tableName, const QVariantLi
 
     qDebug() << "processTable called with:" << tableName << ":" << infoList;
 
-    QDir cacheDir(SupportSystem::appCachePath);
+    QDir cacheDir(AppPathsManager::appCachePath);
     QList<QString> cacheEntry = cacheDir.entryList();
 
     for (const QString& entry : std::as_const(cacheEntry)) {
@@ -36,7 +36,7 @@ std::shared_ptr<QList<FacultyDirection>> CacheManager::loadCache(const QString& 
 
     auto data = std::make_shared<QList<FacultyDirection>>();
 
-    QFile file(SupportSystem::appCachePath + +"/cache_" + tableLastChangeDate(tableName) + "_"
+    QFile file(AppPathsManager::appCachePath + +"/cache_" + tableLastChangeDate(tableName) + "_"
                + tableNameInCache(tableName, infoList));
 
     if (!file.open(QIODevice::ReadOnly)) {
@@ -63,7 +63,7 @@ std::shared_ptr<QList<FacultyDirection>> CacheManager::makeCache(const QString& 
     TableParserBachelor parserBachelor;
     MagicHat magicHatBachelor;
 
-    parserBachelor.setTablePath(SupportSystem::appDataPath + "/" + tableName);
+    parserBachelor.setTablePath(AppPathsManager::appDataPath + "/" + tableName);
     parserBachelor.setEntryCommisionInfo(entryCommisionName, isBachelor, year);
     parserBachelor.parseTable();
 
@@ -88,7 +88,7 @@ std::shared_ptr<QList<FacultyDirection>> CacheManager::makeCache(const QString& 
 void CacheManager::saveCache(const std::shared_ptr<QList<FacultyDirection>>& data,
                              const QString& tableName, const QVariantList& infoList) {
 
-    QFile file(SupportSystem::appCachePath + "/cache_" + tableLastChangeDate(tableName) + "_"
+    QFile file(AppPathsManager::appCachePath + "/cache_" + tableLastChangeDate(tableName) + "_"
                + tableNameInCache(tableName, infoList));
 
     if (!file.open(QIODevice::WriteOnly)) {
@@ -118,7 +118,7 @@ QString CacheManager::tableNameInCache(const QString& tableName, const QVariantL
 
 QString CacheManager::tableLastChangeDate(const QString& tableName) {
 
-    QFileInfo fileInfo(SupportSystem::appDataPath + "/" + tableName);
+    QFileInfo fileInfo(AppPathsManager::appDataPath + "/" + tableName);
     const QString stringDateTime = fileInfo.lastModified().toString("yyyy-MM-dd-hh-mm-ss");
     return stringDateTime;
 }

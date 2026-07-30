@@ -6,7 +6,6 @@
 
 #include "../applicants-faculty-data/applicant.h"
 #include "../applicants-faculty-data/faculty-direction.h"
-#include "../xlsx.h"
 
 class MagicHat {
 public:

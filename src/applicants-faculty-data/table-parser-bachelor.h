@@ -9,8 +9,8 @@
 #include <QTextStream>
 #include <memory>
 #include <expected>
+#include <xlsxdocument.h>
 
-#include "../xlsx.h"
 #include "applicant.h"
 #include "namespaces.h"
 

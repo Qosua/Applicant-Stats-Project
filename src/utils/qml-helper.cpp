@@ -5,7 +5,7 @@
 #include <QFileDialog>
 #include <QUrl>
 
-#include "support-system.h"
+#include "app-paths-manager.h"
 
 QmlHelper::QmlHelper(QObject *parent) : QObject(parent) {}
 
@@ -14,15 +14,15 @@ void QmlHelper::openFolder(const QString &path) {
 }
 
 void QmlHelper::openAppCacheFolder() {
-    QDesktopServices::openUrl(QUrl(SupportSystem::appCachePath));
+    QDesktopServices::openUrl(QUrl(AppPathsManager::appCachePath));
 }
 
 void QmlHelper::addNewTableFromExploler() {
 
     QFileDialog fileDialog;
-    fileDialog.setDirectory(SupportSystem::downloadPath);
+    fileDialog.setDirectory(AppPathsManager::downloadPath);
 
-    QString src = fileDialog.getOpenFileName(nullptr, "", SupportSystem::downloadPath,
+    QString src = fileDialog.getOpenFileName(nullptr, "", AppPathsManager::downloadPath,
                                              "Выберите таблицу (*.xlsx)");
     if (!src.isEmpty())
         addNewTable(src);
@@ -49,14 +49,14 @@ void QmlHelper::addNewTable(const QString &tableFullPath) {
 
 }
 
-void QmlHelper::addFileToAppDataAndDB(QString tablePath, QString tableName, int currentCommisionIndex) {
+void QmlHelper::addTableToAppDataAndDB(QString tablePath, QString tableName, int currentCommisionIndex) {
 
-    QString dest = SupportSystem::appDataPath + "/" + tablePath.split('/').last();
+    QString dest = AppPathsManager::appDataPath + "/" + tablePath.split('/').last();
 
     if (QFile::exists(dest))
         QFile::remove(dest);
 
-    dest = SupportSystem::appDataPath + "/" + tableName;
+    dest = AppPathsManager::appDataPath + "/" + tableName;
 
     QFile::copy(tablePath, dest);
 
@@ -69,10 +69,6 @@ QString QmlHelper::currentTablePath() const { return m_currentTablePath; }
 QString QmlHelper::appVersion() const { return m_version; }
 
 double QmlHelper::currentLoadBarPart() const { return m_currentLoadBarPart; }
-
-bool QmlHelper::isMainWindowShadowed() const {
-    return m_isMainWindowShadowed;
-}
 
 QString QmlHelper::droppedTablePath() const {
     return m_droppedTablePath;
@@ -96,13 +92,6 @@ void QmlHelper::setCurrentLoadBarPart(int v) {
         return;
     m_currentLoadBarPart = v;
     emit currentLoadBarPartChanged();
-}
-
-void QmlHelper::setMainWindowShadow(bool flag) {
-    if (m_isMainWindowShadowed == flag)
-        return;
-    m_isMainWindowShadowed = flag;
-    emit currentMainWindowShadowChanged();
 }
 
 void QmlHelper::setDroppedTablePath(const QString &path) {

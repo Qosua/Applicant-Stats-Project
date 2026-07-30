@@ -4,8 +4,8 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QString>
+#include <xlsxdocument.h>
 
-#include "../xlsx.h"
 #include "src/applicants-faculty-data/table-parser-bachelor.h"
 
 namespace Scripts {

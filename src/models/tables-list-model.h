@@ -7,7 +7,7 @@
 #include <QList>
 #include <QString>
 
-#include "../utils/support-system.h"
+#include "../utils/app-paths-manager.h"
 
 class TablesListModel : public QAbstractListModel {
     Q_OBJECT

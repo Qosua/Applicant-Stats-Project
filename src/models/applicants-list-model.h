@@ -9,7 +9,7 @@
 #include <memory>
 
 #include "../applicants-faculty-data/applicant.h"
-#include "../utils/support-system.h"
+#include "../utils/app-paths-manager.h"
 
 class ApplicantsListModel : public QAbstractListModel {
     Q_OBJECT

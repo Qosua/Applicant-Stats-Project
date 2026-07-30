@@ -12,7 +12,7 @@ Window {
 
     onAccepted: (tablePath, tableName, preset) => {
         console.log(tablePath, tableName, preset)
-        qmlHelper.addFileToAppDataAndDB(tablePath, tableName, preset)
+        qmlHelper.addTableToAppDataAndDB(tablePath, tableName, preset)
     }
 
     title: "Настройки таблицы"
@@ -31,7 +31,7 @@ Window {
     Shortcut {
         sequence: "Escape"
         onActivated: {
-            qmlHelper.isMainWindowShadowed = false
+            windowManager.isMainWindowShadowed = false
             dialog.canceled();
             dialog.close()
         }
@@ -185,7 +185,7 @@ Window {
                     }
                     CloseButton {
                         onClicked: {
-                            qmlHelper.isMainWindowShadowed = false
+                            windowManager.isMainWindowShadowed = false
                             dialog.canceled();
                             dialog.close()
                         }
@@ -255,11 +255,16 @@ Window {
                             presetCombo.currentIndex,
                         )
                         dialog.close()
+                        windowManager.isMainWindowShadowed = false
                     }
                 }
                 DialogButton {
                     text: "Отмена"
-                    onClicked: { dialog.canceled(); dialog.close() }
+                    onClicked: {
+                        dialog.canceled()
+                        dialog.close()
+                        windowManager.isMainWindowShadowed = false
+                    }
                 }
             }
         }

@@ -60,7 +60,7 @@ Window {
         anchors.fill: parent
         color: "#000000"
         opacity: 0.45
-        visible: false
+        visible: windowManager.isMainWindowShadowed
         Behavior on opacity {
             NumberAnimation { duration: 150; easing.type: Easing.OutQuad }
         }

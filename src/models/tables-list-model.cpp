@@ -77,12 +77,12 @@ void TablesListModel::updateWatcher(const QString &changedPath) {
 
     Q_UNUSED(changedPath);
 
-    const QDir dataDir(SupportSystem::appDataPath);
+    const QDir dataDir(AppPathsManager::appDataPath);
     const QList<QString> currentFiles = dataDir.entryList(QDir::Files | QDir::NoDotAndDotDot);
     const QList<QString> watchedFiles = m_watcher->files();
 
     m_watcher->removePaths(watchedFiles);
-    m_watcher->removePath(SupportSystem::appDataPath + "/");
+    m_watcher->removePath(AppPathsManager::appDataPath + "/");
 
     for (const QString &file : currentFiles) {
 
@@ -93,7 +93,7 @@ void TablesListModel::updateWatcher(const QString &changedPath) {
 	    m_watcher->addPath(fullPath);
     }
 
-    m_watcher->addPath(SupportSystem::appDataPath + "/");
+    m_watcher->addPath(AppPathsManager::appDataPath + "/");
 
     if (!m_tables.isEmpty()) {
 	beginRemoveRows(QModelIndex(), 0, m_tables.size() - 1);
@@ -128,7 +128,7 @@ void TablesListModel::updateWatcher(const QString &changedPath) {
 
 QString TablesListModel::tableLastChangeDate(const QString &tableName) {
 
-    const QFileInfo fileInfo(SupportSystem::appDataPath + "/" + tableName);
+    const QFileInfo fileInfo(AppPathsManager::appDataPath + "/" + tableName);
     const QString stringDateTime = fileInfo.lastModified().toString("yyyy.MM.dd hh:mm:ss");
     return stringDateTime;
 }

@@ -13,11 +13,11 @@
 #include "models/stats-page-model.h"
 #include "models/tables-list-model.h"
 #include "models/tree-view-model.h"
+#include "qml-modules/window-manager.h"
+#include "utils/app-paths-manager.h"
 #include "utils/database-manager.h"
 #include "utils/qml-helper.h"
 #include "utils/scripts.h"
-#include "utils/support-system.h"
-#include "utils/window-manager.h"
 
 void connectSignals(QmlHelper& qmlHelper, CacheManager& cacheManager, TreeViewModel& treeViewModel,
                     StatsPageModel& statsPageModel) {
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 
     QApplication app(argc, argv);
 
-    SupportSystem::init();
+    AppPathsManager::init();
     DataBaseManager::instance().init();
     QQuickStyle::setStyle("Basic");
 
@@ -73,6 +73,7 @@ int main(int argc, char* argv[]) {
     engine.rootContext()->setContextProperty("sortFilterProxyModel", &proxyModel);
     engine.rootContext()->setContextProperty("tablesListModel", &tablesListModel);
     engine.rootContext()->setContextProperty("qmlHelper", &qmlHelper);
+    engine.rootContext()->setContextProperty("windowManager", &WindowManager::instance());
     engine.rootContext()->setContextProperty("treeViewModel", &treeViewModel);
     engine.rootContext()->setContextProperty("statsPageModel", &statsPageModel);
     engine.rootContext()->setContextProperty("entryCommisionsListModel", &entryModel);
